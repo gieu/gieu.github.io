@@ -2,4 +2,32 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="Home" />
+<BaseLayout title="Home">
+    <div
+        id="hero-banner"
+        class="bg-hero-image bg-center bg-no-repeat bg-cover w-full h-screen grid p-10"
+    >
+        <div
+            class="flex flex-col gap-10 justify-center items-center text-cod_gray-50 max-w-[570px]"
+        >
+            <h1 class="text-5xl font-bold leading-tight">
+                <span>Grupo de investigación en</span>
+                <span class="text-Shiraz-700">Informática Educativa</span>
+            </h1>
+            <div>
+                <p class="text-2xl mb-5 tracking-wide">
+                    Fomentamos el desarrollo de habilidades STEM
+                    <span class="text-daisy_bush-700 font-bold"
+                        >para todas y todos.</span
+                    >
+                </p>
+                <p>
+                    Todas y todos los estudiantes, merecen construir un futuro
+                    sólido en un mundo complejo. Estamos dedicados a promover la
+                    investigación STEM a través de la tecnología para incentivar
+                    su uso y cambiar la forma en la que se incluye en las aulas.
+                </p>
+            </div>
+        </div>
+    </div>
+</BaseLayout>
