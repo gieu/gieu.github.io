@@ -4,9 +4,11 @@ import { Image } from "astro:assets";
 import brand from "../assets/img/brand/brand_light.svg";
 import brand_sm from "../assets/img/brand/sm_light.svg";
 
-import github_icon from "../../assets/icons/github_light.svg";
-import email_icon from "../../assets/icons/email_light.svg";
-import instagram_icon from "../../assets/icons/instagram_light.svg";
+import Contact from "./common/Contact.astro";
+
+import { SHORT_NAME, LEMA } from "../consts";
+
+const year = new Date().getFullYear();
 ---
 
 <footer class="bg-cod_gray-950 text-cod_gray-50 text-sm">
@@ -24,15 +26,15 @@ import instagram_icon from "../../assets/icons/instagram_light.svg";
             />
         </div>
         <div class="flex items-center justify-center col-span-2">
-            <p class="text-2xl bold">
-                Fomentamos el desarrollo de habilidades STEM para todas y todos.
-            </p>
+            <p class="text-2xl bold">{LEMA}</p>
         </div>
     </div>
     <div
         id="main-footer"
-        class="flex flex-col sm:grid sm:grid-cols-2 px-5 py-3"
+        class="flex flex-col sm:grid sm:grid-cols-1 px-5 py-3"
     >
+        <!-- TODO: change grid cols to 2  when routes are created -->
+
         <div class="flex justify-center flex-row gap-5">
             <Image
                 src={brand_sm}
@@ -42,23 +44,19 @@ import instagram_icon from "../../assets/icons/instagram_light.svg";
                 decoding="async"
             />
             <div class="flex flex-row gap-4 items-center">
-                <a href="/">Ins</a>
-                <a href="/">git</a>
-                <a href="/">mail</a>
-                <a
-                    href="/"
-                    class="rounded-full border-cod_gray-50 border-solid border py-1 px-2 hover:bg-cod_gray-900/50"
-                    >Grup Lab</a
-                >
+                <Contact />
             </div>
         </div>
-        <div class="flex flex-row justify-center p-5 gap-4">
+
+        <!-- TODO: remove hidden when routes are created -->
+        <div class="flex flex-row justify-center p-5 gap-4 !hidden">
             <a href="/about">Sobre GIEd</a>
             <a href="/projects">Proyectos</a>
             <a href="/research">Investigación</a>
         </div>
     </div>
     <div id="copyright" class="p-3 text-center">
-        © 2024 GIEd. Todos los derechos reservados
+        © {year}
+        {SHORT_NAME}. Todos los derechos reservados
     </div>
 </footer>
