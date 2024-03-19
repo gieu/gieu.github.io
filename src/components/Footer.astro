@@ -1,0 +1,53 @@
+---
+import { Image } from "astro:assets";
+
+import Brand from "../assets/img/brand/brand_light.svg";
+import Brand_sm from "../assets/img/brand/sm_dark.svg";
+
+import Contact from "./Contact.astro";
+---
+
+<footer class="bg-cod_gray-950 text-cod_gray-50 text-sm">
+    <div
+        id="lema"
+        class="flex flex-col items-center gap-4 sm:grid sm:grid-cols-3 px-5 py-10 bg-Shiraz-800 bg-main-pattern bg-no-repeat bg-center bg-cover text-center"
+    >
+        <div class="flex justify-center">
+            <Image
+                src={Brand}
+                alt="Grupo de Investigación en informática educativa"
+                width={200}
+                loading="lazy"
+                decoding="async"
+            />
+        </div>
+        <div class="flex items-center justify-center col-span-2">
+            <p class="text-2xl bold">
+                Fomentamos el desarrollo de habilidades STEM para todas y todos.
+            </p>
+        </div>
+    </div>
+    <div
+        id="main-footer"
+        class="flex flex-col sm:grid sm:grid-cols-2 px-5 py-3"
+    >
+        <div class="flex justify-center flex-row gap-5">
+            <Image
+                src={Brand_sm}
+                alt="GIEd"
+                width={35}
+                loading="lazy"
+                decoding="async"
+            />
+            <Contact />
+        </div>
+        <div class="flex flex-row justify-center p-5 gap-4">
+            <a href="/about">Sobre GIEd</a>
+            <a href="/projects">Proyectos</a>
+            <a href="/research">Investigación</a>
+        </div>
+    </div>
+    <div id="copyright" class="p-3 text-center">
+        © 2024 GIEd. Todos los derechos reservados
+    </div>
+</footer>

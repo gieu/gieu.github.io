@@ -1,0 +1,61 @@
+---
+import { Image } from "astro:assets";
+import Brand from "../../assets/img/brand/brand_dark.svg";
+import Brand_sm from "../../assets/img/brand/sm_light.svg";
+
+import Contact from "../Contact.astro";
+---
+
+<header class="relative">
+    <div
+        id="utility-header"
+        class="w-full bg-cod_gray-950 text-cod_gray-50 grid grid-cols-2 p-2 text-sm"
+    >
+        <div id="brand-small" class="flex flex-row gap-4 items-center">
+            <Image
+                src={Brand_sm}
+                alt="GIEd"
+                width={35}
+                loading="lazy"
+                decoding="async"
+            />
+        </div>
+
+        <div class="flex justify-end">
+            <Contact className="sm:flex hidden" />
+            <button id="togle-menu" class="block sm:hidden">|||</button>
+        </div>
+    </div>
+    <div id="main-header">
+        <div id="brand" class="flex justify-center">
+            <Image
+                src={Brand}
+                alt="Grupo de Investigación en informática educativa"
+                width={200}
+                loading="lazy"
+                decoding="async"
+            />
+        </div>
+        <nav class="flex flex-col sm:flex-row justify-center gap-10">
+            <a href="/about">Sobre GIEd</a>
+            <a href="/projects">Proyectos</a>
+            <a href="/research">Investigación</a>
+        </nav>
+
+        <Contact className="sm:hidden flex-col flex-wrap" />
+    </div>
+
+    <style>
+        #main-header {
+            @apply p-5;
+            @apply hidden;
+
+            @apply sm:text-cod_gray-950 sm:bg-cod_gray-50;
+            @apply sm:w-full sm:h-fit;
+            @apply sm:relative;
+            @apply sm:shadow-none;
+
+            @apply sm:grid sm:grid-cols-2 sm:items-center;
+        }
+    </style>
+</header>

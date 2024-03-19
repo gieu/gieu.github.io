@@ -1,0 +1,14 @@
+---
+const { className } = Astro.props;
+---
+
+<div class={"flex flex-row gap-4 items-center " + className || ""}>
+    <a href="/">Ins</a>
+    <a href="/">git</a>
+    <a href="/">mail</a>
+    <a
+        href="/"
+        class="rounded-full border-cod_gray-50 border-solid border py-1 px-2 hover:bg-cod_gray-900/50"
+        >Grup Lab</a
+    >
+</div>
