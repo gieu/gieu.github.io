@@ -1,48 +1,90 @@
 ---
 import { Image } from "astro:assets";
-import Brand from "../../assets/img/brand/brand_dark.svg";
-import Brand_sm from "../../assets/img/brand/sm_light.svg";
 
-import Contact from "../Contact.astro";
+import brand from "../../assets/img/brand/brand_dark.svg";
+import brand_small from "../../assets/img/brand/sm_light.svg";
+
+import github_icon from "../../assets/icons/github_light.svg";
+import email_icon from "../../assets/icons/email_light.svg";
+import instagram_icon from "../../assets/icons/instagram_light.svg";
+
+import HeaderLink from "./HeaderLink.astro";
 ---
 
-<header class="relative">
+<header>
     <div
         id="utility-header"
-        class="w-full bg-cod_gray-950 text-cod_gray-50 grid grid-cols-2 p-2 text-sm"
+        class="bg-cod_gray-950 text-cod_gray-50 text-sm grid grid-cols-2 p-2"
     >
         <div id="brand-small" class="flex flex-row gap-4 items-center">
-            <Image
-                src={Brand_sm}
-                alt="GIEd"
-                width={35}
-                loading="lazy"
-                decoding="async"
-            />
+            <a href="/">
+                <Image
+                    src={brand_small}
+                    alt="GIEd"
+                    width={35}
+                    loading="eager"
+                    decoding="async"
+                />
+            </a>
         </div>
 
         <div class="flex justify-end">
-            <Contact className="sm:flex hidden" />
+            <div class="sm:flex flex-row gap-4 items-center hidden">
+                <a href="https://github.com/gieu/" target="_blank">
+                    <Image
+                        src={github_icon}
+                        alt="github"
+                        width={25}
+                        loading="eager"
+                    />
+                </a>
+                <a
+                    href="https://www.instagram.com/gied_uninorte/"
+                    target="_blank"
+                >
+                    <Image
+                        src={instagram_icon}
+                        alt="instagram"
+                        width={25}
+                        loading="eager"
+                    />
+                </a>
+                <a href="mailto:cvieira@uninorte.edu.co">
+                    <Image
+                        src={email_icon}
+                        alt="email"
+                        width={25}
+                        loading="eager"
+                    />
+                </a>
+                <a
+                    href="/"
+                    class="rounded-full transition border-cod_gray-50 border-solid border py-1 px-2 hover:bg-cod_gray-900/50"
+                    >Grup Lab</a
+                >
+            </div>
+
             <button id="togle-menu" class="block sm:hidden">|||</button>
         </div>
     </div>
-    <div id="main-header">
-        <div id="brand" class="flex justify-center">
-            <Image
-                src={Brand}
-                alt="Grupo de Investigación en informática educativa"
-                width={200}
-                loading="lazy"
-                decoding="async"
-            />
-        </div>
-        <nav class="flex flex-col sm:flex-row justify-center gap-10">
-            <a href="/about">Sobre GIEd</a>
-            <a href="/projects">Proyectos</a>
-            <a href="/research">Investigación</a>
-        </nav>
 
-        <Contact className="sm:hidden flex-col flex-wrap" />
+    <div id="main-header">
+        <div id="brand" class="flex">
+            <a href="/">
+                <Image
+                    src={brand}
+                    alt="Grupo de Investigación en informática educativa"
+                    width={200}
+                    loading="eager"
+                    decoding="async"
+                />
+            </a>
+        </div>
+        <nav class="flex flex-col justify-end sm:flex-row gap-10">
+            <HeaderLink href="/">Sobre GIEd</HeaderLink>
+            <HeaderLink href="/projects">Proyectos</HeaderLink>
+            <HeaderLink href="/research">Investigación</HeaderLink>
+        </nav>
     </div>
 
     <style>

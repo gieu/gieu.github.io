@@ -3,8 +3,6 @@ import { Image } from "astro:assets";
 
 import Brand from "../assets/img/brand/brand_light.svg";
 import Brand_sm from "../assets/img/brand/sm_dark.svg";
-
-import Contact from "./Contact.astro";
 ---
 
 <footer class="bg-cod_gray-950 text-cod_gray-50 text-sm">
@@ -39,7 +37,16 @@ import Contact from "./Contact.astro";
                 loading="lazy"
                 decoding="async"
             />
-            <Contact />
+            <div class="flex flex-row gap-4 items-center">
+                <a href="/">Ins</a>
+                <a href="/">git</a>
+                <a href="/">mail</a>
+                <a
+                    href="/"
+                    class="rounded-full border-cod_gray-50 border-solid border py-1 px-2 hover:bg-cod_gray-900/50"
+                    >Grup Lab</a
+                >
+            </div>
         </div>
         <div class="flex flex-row justify-center p-5 gap-4">
             <a href="/about">Sobre GIEd</a>
