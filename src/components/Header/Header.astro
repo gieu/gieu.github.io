@@ -4,10 +4,7 @@ import { Image } from "astro:assets";
 import brand from "../../assets/img/brand/brand_dark.svg";
 import brand_small from "../../assets/img/brand/sm_light.svg";
 
-import github_icon from "../../assets/icons/github_light.svg";
-import email_icon from "../../assets/icons/email_light.svg";
-import instagram_icon from "../../assets/icons/instagram_light.svg";
-
+import Contact from "../common/Contact.astro";
 import HeaderLink from "./HeaderLink.astro";
 ---
 
@@ -29,47 +26,16 @@ import HeaderLink from "./HeaderLink.astro";
         </div>
 
         <div class="flex justify-end">
-            <div class="sm:flex flex-row gap-4 items-center hidden">
-                <a href="https://github.com/gieu/" target="_blank">
-                    <Image
-                        src={github_icon}
-                        alt="github"
-                        width={25}
-                        loading="eager"
-                    />
-                </a>
-                <a
-                    href="https://www.instagram.com/gied_uninorte/"
-                    target="_blank"
-                >
-                    <Image
-                        src={instagram_icon}
-                        alt="instagram"
-                        width={25}
-                        loading="eager"
-                    />
-                </a>
-                <a href="mailto:cvieira@uninorte.edu.co">
-                    <Image
-                        src={email_icon}
-                        alt="email"
-                        width={25}
-                        loading="eager"
-                    />
-                </a>
-                <a
-                    href="/"
-                    class="rounded-full transition border-cod_gray-50 border-solid border py-1 px-2 hover:bg-cod_gray-900/50"
-                    >Grup Lab</a
-                >
+            <div class="flex flex-row gap-4 items-center">
+                <Contact />
             </div>
 
-            <button id="togle-menu" class="block sm:hidden">|||</button>
+            <!-- <button id="togle-menu" class="block sm:hidden">|||</button> -->
         </div>
     </div>
 
     <div id="main-header">
-        <div id="brand" class="flex">
+        <div id="brand" class="hidden sm:flex">
             <a href="/">
                 <Image
                     src={brand}
@@ -80,7 +46,7 @@ import HeaderLink from "./HeaderLink.astro";
                 />
             </a>
         </div>
-        <nav class="flex flex-col justify-end sm:flex-row gap-10">
+        <nav class="flex flex-row justify-center sm:justify-end gap-10">
             <HeaderLink href="/">Sobre GIEd</HeaderLink>
             <HeaderLink href="/projects">Proyectos</HeaderLink>
             <HeaderLink href="/research">Investigación</HeaderLink>
@@ -90,14 +56,13 @@ import HeaderLink from "./HeaderLink.astro";
     <style>
         #main-header {
             @apply p-5;
-            @apply hidden;
 
-            @apply sm:text-cod_gray-950 sm:bg-cod_gray-50;
-            @apply sm:w-full sm:h-fit;
-            @apply sm:relative;
-            @apply sm:shadow-none;
+            @apply text-cod_gray-950 bg-cod_gray-50;
+            @apply w-full h-fit;
+            @apply relative;
+            @apply shadow-none;
 
-            @apply sm:grid sm:grid-cols-2 sm:items-center;
+            @apply sm:grid sm:grid-cols-2 items-center;
         }
     </style>
 </header>

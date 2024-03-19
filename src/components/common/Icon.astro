@@ -1,0 +1,6 @@
+---
+import { Image } from "astro:assets";
+const { src, alt, width = 25, loading = "eager", ...props } = Astro.props;
+---
+
+<Image src={src} alt={alt} width={width} loading="eager" />
