@@ -31,10 +31,8 @@ const year = new Date().getFullYear();
     </div>
     <div
         id="main-footer"
-        class="flex flex-col sm:grid sm:grid-cols-1 px-5 py-3"
+        class="flex flex-col sm:grid sm:grid-cols-2 p-5 pt-10 sm:py-3"
     >
-        <!-- TODO: change grid cols to 2  when routes are created -->
-
         <div class="flex justify-center flex-row gap-5">
             <Image
                 src={brand_sm}
@@ -44,13 +42,11 @@ const year = new Date().getFullYear();
                 decoding="async"
             />
             <div class="flex flex-row gap-4 items-center">
-                <Contact />
+                <Contact loading="lazy" />
             </div>
         </div>
-
-        <!-- TODO: remove hidden when routes are created -->
-        <div class="flex flex-row justify-center p-5 gap-4 !hidden">
-            <a href="/about">Sobre GIEd</a>
+        <div class="flex flex-row justify-center p-5 gap-4">
+            <a href="/">Sobre GIEd</a>
             <a href="/projects">Proyectos</a>
             <a href="/research">Investigación</a>
         </div>

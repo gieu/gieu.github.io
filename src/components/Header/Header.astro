@@ -11,7 +11,7 @@ import HeaderLink from "./HeaderLink.astro";
 <header>
     <div
         id="utility-header"
-        class="bg-cod_gray-950 text-cod_gray-50 text-sm grid grid-cols-2 p-2"
+        class="bg-cod_gray-950 text-cod_gray-50 text-sm grid grid-cols-2 p-2 sm:px-20"
     >
         <div id="brand-small" class="flex flex-row gap-4 items-center">
             <a href="/">
@@ -34,8 +34,7 @@ import HeaderLink from "./HeaderLink.astro";
         </div>
     </div>
 
-    <!-- TODO: remove hidden when routes are created -->
-    <div id="main-header" class="!hidden">
+    <div id="main-header" class="sm:!px-20">
         <div id="brand" class="hidden sm:flex">
             <a href="/">
                 <Image
