@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+// import { Image } from "astro:assets";
 
 import brand from "../assets/img/brand/brand_light.svg";
 import brand_sm from "../assets/img/brand/sm_light.svg";
@@ -9,16 +9,17 @@ import Contact from "./common/Contact.astro";
 import { SHORT_NAME, LEMA } from "../consts";
 
 const year = new Date().getFullYear();
+const bg_url = `url(${import.meta.env.BASE_URL}/patterns/bg.webp)`;
 ---
 
 <footer class="bg-cod_gray-950 text-cod_gray-50 text-sm">
     <div
         id="lema"
-        class="flex flex-col items-center gap-4 sm:grid sm:grid-cols-3 px-5 py-10 bg-Shiraz-800 bg-main-pattern bg-no-repeat bg-center bg-cover text-center"
+        class="flex flex-col items-center gap-4 sm:grid sm:grid-cols-3 px-5 py-10 bg-main-pattern text-center"
     >
         <div class="flex justify-center">
-            <Image
-                src={brand}
+            <img
+                src={brand.src}
                 alt="Grupo de Investigación en informática educativa"
                 width={200}
                 loading="lazy"
@@ -34,8 +35,8 @@ const year = new Date().getFullYear();
         class="flex flex-col sm:grid sm:grid-cols-2 p-5 pt-10 sm:py-3"
     >
         <div class="flex justify-center flex-row gap-5">
-            <Image
-                src={brand_sm}
+            <img
+                src={brand_sm.src}
                 alt="GIEd"
                 width={35}
                 loading="lazy"
@@ -56,3 +57,21 @@ const year = new Date().getFullYear();
         {SHORT_NAME}. Todos los derechos reservados
     </div>
 </footer>
+
+<style define:vars={{ bg_url }}>
+    .bg-main-pattern {
+        @apply bg-Shiraz-800;
+        background: linear-gradient(
+                0deg,
+                rgba(18, 18, 18, 0.4) 0%,
+                rgba(18, 18, 18, 0.4) 100%
+            ),
+            linear-gradient(
+                90deg,
+                rgba(22, 22, 22, 0.6) 0%,
+                rgba(0, 0, 0, 0) 100%
+            ),
+            var(--bg_url);
+        @apply bg-no-repeat bg-center bg-cover;
+    }
+</style>

@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+// import { Image } from "astro:assets";
 
 import brand from "../../assets/img/brand/brand_dark.svg";
 import brand_small from "../../assets/img/brand/sm_light.svg";
@@ -15,8 +15,8 @@ import HeaderLink from "./HeaderLink.astro";
     >
         <div id="brand-small" class="flex flex-row gap-4 items-center">
             <a href="/">
-                <Image
-                    src={brand_small}
+                <img
+                    src={brand_small.src}
                     alt="GIEd"
                     width={35}
                     loading="eager"
@@ -37,8 +37,8 @@ import HeaderLink from "./HeaderLink.astro";
     <div id="main-header" class="sm:!px-20">
         <div id="brand" class="hidden sm:flex">
             <a href="/">
-                <Image
-                    src={brand}
+                <img
+                    src={brand.src}
                     alt="Grupo de Investigación en informática educativa"
                     width={200}
                     loading="eager"

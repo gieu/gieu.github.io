@@ -1,15 +1,12 @@
 /** @type {import('tailwindcss').Config} */
+
+
 export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		extend: {
 			fontFamily: {
 				Lato: ['Lato', 'sans-serif'],
-			},
-			backgroundImage: {
-				"main-pattern": "linear-gradient(0deg, rgba(18, 18, 18, 0.40) 0%, rgba(18, 18, 18, 0.40) 100%), linear-gradient(90deg, rgba(22, 22, 22, 0.60) 0%, rgba(0, 0, 0, 0.00) 100%), url('/patterns/bg.webp')",
-
-				"hero-image": " linear-gradient(-115deg, rgba(0, 0, 0, 0.00) 2.89%, rgba(18, 18, 18, 0.90) 50.14%), url('/hero-image.webp')"
 			},
 			colors: {
 				Shiraz: {

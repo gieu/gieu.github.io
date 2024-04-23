@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
   website:
-    container_name: webside
+    container_name: website
     build:
       dockerfile: ./Dockerfile
       context: ./
