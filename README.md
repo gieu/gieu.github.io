@@ -13,3 +13,17 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
+
+To run using docker compose 
+
+1. Windowns
+
+    ```
+    $env:PORT="8517"
+    docker-compose up --build --force-recreate --no-deps -d
+    ```
+2. Ubuntu
+    ```
+    export PORT="8517"
+    sudo docker-compose up --build --force-recreate --no-deps -d
+    ```
