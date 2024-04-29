@@ -1,6 +1,8 @@
 version: '2.4'
 
 services:
+  # nota: cambiar esto a "website" en el master 
+  # y website_staging en staing 
   website_staging:
     container_name: website
     build:
