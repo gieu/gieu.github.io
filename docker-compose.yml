@@ -1,8 +1,8 @@
 version: '2.4'
 
 services:
-  website:
-    container_name: staging
+  website_staging:
+    container_name: website
     build:
       dockerfile: ./Dockerfile
       context: ./
