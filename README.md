@@ -16,14 +16,16 @@ All commands are run from the root of the project, from a terminal:
 
 To run using docker compose 
 
-1. Windowns
+1. master 
 
     ```
-    $env:PORT="8517"
+    echo "PORT=8517" >> .env
     docker-compose up --build --force-recreate --no-deps -d
     ```
-2. Ubuntu
+
+2. staging 
+
     ```
-    export PORT="8517"
-    sudo docker-compose up --build --force-recreate --no-deps -d
+    echo "PORT=8518" >> .env
+    docker-compose up --build --force-recreate --no-deps -d
     ```

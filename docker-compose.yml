@@ -6,11 +6,7 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: ./
-      args:
-        - PORT=${PORT}
     ports:
       - "${PORT}:${PORT}"
     environment:
       - PORT=${PORT}
-
-      # - '8517:8517'
