@@ -21,15 +21,9 @@ const allResearchs = await getCollection("researchs");
         </div>
     </div>
 
-    <div>
-        {
-            allResearchs.map((research) => (
-                <ul>
-                    <li>{research.data.title}</li>
-                </ul>
-            ))
-        }
-    </div>
+    <ul>
+        {allResearchs.map((research) => <li>{research.data.title}</li>)}
+    </ul>
 </BaseLayout>
 
 <style define:vars={{ bg_url }}>

@@ -18,6 +18,15 @@ const researchsCollection = defineCollection({
     })
 });
 
+const projectsCollections = defineCollection({
+    type: 'content',
+    schema: z.object({
+        title: z.string(),
+        pubDate: z.date(),
+        cover: z.string().optional()
+    })
+})
 export const collections = {
     'researchs': researchsCollection,
+    'projects': projectsCollections
 };
