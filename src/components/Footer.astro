@@ -9,7 +9,8 @@ import Contact from "./common/Contact.astro";
 import { SHORT_NAME, LEMA } from "../consts";
 
 const year = new Date().getFullYear();
-const bg_url = `url(${import.meta.env.BASE_URL}/patterns/bg.webp)`;
+const base_url = import.meta.env.BASE_URL;
+const bg_url = `url(${base_url}/patterns/bg.webp)`;
 ---
 
 <footer class="bg-cod_gray-950 text-cod_gray-50 text-sm">
@@ -48,8 +49,8 @@ const bg_url = `url(${import.meta.env.BASE_URL}/patterns/bg.webp)`;
         </div>
         <div class="flex flex-row justify-center p-5 gap-4">
             <!-- <a href="/">Sobre GIEd</a>
-            <a href="/projects">Proyectos</a>
-            <a href="/research">Investigación</a> -->
+            <a href="/projects">Proyectos</a>  -->
+            <a href=`${base_url}/research`>Investigación</a>
         </div>
     </div>
     <div id="copyright" class="p-3 text-center">

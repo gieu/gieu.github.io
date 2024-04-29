@@ -1,8 +1,51 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const base_url = import.meta.env.BASE_URL;
+const bg_url = `url(${base_url}/patterns/bg.webp)`;
+
+const allResearchs = await getCollection("researchs");
 ---
 
-<BaseLayout title="Investigación">
-    <h1 class="text-3xl
-font-bold">Investigación</h1>
+<BaseLayout title="Proyectos">
+    <div
+        id="lema"
+        class="flex flex-col items-center gap-4 sm:grid sm:grid-cols-3 px-5 py-10 bg-main-pattern text-center text-cod_gray-50"
+    >
+        <div class="flex justify-center">
+            <p class="text-2xl font-bold">Investigación</p>
+        </div>
+        <div class="flex items-center justify-center col-span-2">
+            <!-- <p class="text-2xl bold">hi</p> -->
+        </div>
+    </div>
+
+    <div>
+        {
+            allResearchs.map((research) => (
+                <ul>
+                    <li>{research.data.title}</li>
+                </ul>
+            ))
+        }
+    </div>
 </BaseLayout>
+
+<style define:vars={{ bg_url }}>
+    .bg-main-pattern {
+        @apply bg-Shiraz-800;
+        background: linear-gradient(
+                0deg,
+                rgba(18, 18, 18, 0.4) 0%,
+                rgba(18, 18, 18, 0.4) 100%
+            ),
+            linear-gradient(
+                90deg,
+                rgba(22, 22, 22, 0.6) 0%,
+                rgba(0, 0, 0, 0) 100%
+            ),
+            var(--bg_url);
+        @apply bg-no-repeat bg-center bg-cover;
+    }
+</style>

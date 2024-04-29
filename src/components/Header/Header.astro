@@ -6,6 +6,8 @@ import brand_small from "../../assets/img/brand/sm_light.svg";
 
 import Contact from "../common/Contact.astro";
 import HeaderLink from "./HeaderLink.astro";
+
+const base_url = import.meta.env.BASE_URL;
 ---
 
 <header>
@@ -14,7 +16,7 @@ import HeaderLink from "./HeaderLink.astro";
         class="bg-cod_gray-950 text-cod_gray-50 text-sm grid grid-cols-2 p-2 sm:px-20"
     >
         <div id="brand-small" class="flex flex-row gap-4 items-center">
-            <a href="/">
+            <a href=`${base_url}/`>
                 <img
                     src={brand_small.src}
                     alt="GIEd"
@@ -36,7 +38,7 @@ import HeaderLink from "./HeaderLink.astro";
 
     <div id="main-header" class="sm:!px-20">
         <div id="brand" class="hidden sm:flex">
-            <a href="/">
+            <a href=`${base_url}/`>
                 <img
                     src={brand.src}
                     alt="Grupo de Investigación en informática educativa"
@@ -48,8 +50,8 @@ import HeaderLink from "./HeaderLink.astro";
         </div>
         <nav class="flex flex-row justify-center sm:justify-end gap-10">
             <!-- <HeaderLink href="/">Sobre GIEd</HeaderLink>
-            <HeaderLink href="/projects">Proyectos</HeaderLink>
-            <HeaderLink href="/research">Investigación</HeaderLink> -->
+            <HeaderLink href="/projects">Proyectos</HeaderLink> -->
+            <HeaderLink href=`${base_url}/research`>Investigación</HeaderLink>
         </nav>
     </div>
 
