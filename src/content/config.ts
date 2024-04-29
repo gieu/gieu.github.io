@@ -8,7 +8,7 @@ const researchsCollection = defineCollection({
         volume: z.number().optional(),
         ISSN: z.string().optional(),
         url: z.string(),
-        doi: z.string().optional(),
+        DOI: z.string().optional(),
         number: z.number().optional(),
         journal: z.string(),
         publisher: z.string(),
