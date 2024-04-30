@@ -23,6 +23,7 @@ const projectsCollections = defineCollection({
     schema: z.object({
         title: z.string(),
         pubDate: z.date(),
+        summary: z.string(),
         cover: z.string().optional()
     })
 })
