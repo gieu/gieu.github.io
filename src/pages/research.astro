@@ -1,6 +1,8 @@
 ---
 import { getCollection } from "astro:content";
 
+import { MONTHS } from "../consts";
+
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ResearchCard from "../components/ResearchCard.astro";
 
@@ -9,7 +11,13 @@ const bg_url = `url(${base_url}/patterns/bg.webp)`;
 
 const allResearchs = await getCollection("researchs");
 
-allResearchs.sort((a, b) => b.data.year - a.data.year);
+allResearchs
+    .sort((a, b) => b.data.year - a.data.year)
+    .sort(
+        (a, b) =>
+            MONTHS[a.data.month as keyof typeof MONTHS] -
+            MONTHS[b.data.month as keyof typeof MONTHS],
+    );
 ---
 
 <BaseLayout title="Proyectos">
