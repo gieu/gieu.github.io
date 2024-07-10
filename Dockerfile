@@ -1,29 +1,9 @@
-# Stage 1: Build stage
-FROM node:lts AS build
-
+FROM node:lts AS runtime
 WORKDIR /app
 
-# Copy package.json and package-lock.json separately to leverage Docker layer caching
-COPY package*.json ./
-
-# Install npm dependencies
-RUN npm install --production
-
-# Copy the rest of the application code
 COPY . .
 
-# Build the application
+RUN npm install
 RUN npm run build
-
-# Stage 2: Runtime stage
-FROM node:lts AS runtime
-
-WORKDIR /app
-
-# Copy built artifacts from the build stage
-COPY --from=build /app/dist ./dist
-
-# Expose port defined in environment variable (default to 3000)FROM node:lts AS runtime
-EXPOSE 8501
 
 CMD node ./dist/server/entry.mjs
