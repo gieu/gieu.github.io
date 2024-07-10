@@ -1,5 +1,3 @@
-version: '2.4'
-
 services:
   website:
     container_name: website
@@ -7,6 +5,4 @@ services:
       dockerfile: ./Dockerfile
       context: ./
     ports:
-      - "${PORT}:${PORT}"
-    environment:
-      - PORT=${PORT}
+      - "8017:8501"

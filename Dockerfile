@@ -24,6 +24,6 @@ WORKDIR /app
 COPY --from=build /app/dist ./dist
 
 # Expose port defined in environment variable (default to 3000)FROM node:lts AS runtime
-EXPOSE ${PORT}
+EXPOSE 8501
 
 CMD node ./dist/server/entry.mjs
