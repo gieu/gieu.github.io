@@ -1,34 +1,34 @@
 ---
 // export const prerender = true; // This page is static
 
-// import { Image } from "astro:assets"; No queria funcionar
 import GroupImage from "../assets/img/team/grupo2021.jpg";
 import BaseLayout from "../layouts/BaseLayout.astro";
-
-const bg_url = `url(${import.meta.env.BASE_URL}/hero-image.webp)`;
+import Contact from "../components/common/Contact.astro";
 ---
 
-<BaseLayout title="Home">
-    <div>
-        <div
+<BaseLayout title="GIEU - Grupo de Investigación en Informática Educativa">
+    <main>
+        <!-- Hero Section -->
+        <section
             id="hero-banner"
             class="bg-hero-image w-full min-h-screen grid p-10 sm:px-20"
+            aria-label="Sección principal"
         >
             <div
-                class="flex flex-col gap-10 justify-center items-center text-cod_gray-50 max-w-[570px]"
+                class="flex flex-col gap-10 justify-center items-start text-cod_gray-50 max-w-[570px] animate-fade-in"
             >
-                <h1 class="text-5xl font-bold leading-tight">
+                <h1 class="text-4xl md:text-5xl font-bold leading-tight text-left">
                     <span>Grupo de investigación en</span>
-                    <span class="text-Shiraz-700">Informática Educativa</span>
+                    <span class="text-Shiraz-700 block mt-2">Informática Educativa</span>
                 </h1>
-                <div>
-                    <p class="text-2xl mb-5 tracking-wide">
+                <div class="text-left">
+                    <p class="text-xl md:text-2xl mb-5 tracking-wide">
                         Fomentamos el desarrollo de habilidades STEM
-                        <span class="text-daisy_bush-700 font-bold"
+                        <span class="text-daisy_bush-700 font-bold block sm:inline"
                             >para todas y todos.</span
                         >
                     </p>
-                    <p>
+                    <p class="text-base md:text-lg leading-relaxed">
                         Todas y todos los estudiantes, merecen construir un
                         futuro sólido en un mundo complejo. Estamos dedicados a
                         promover la investigación STEM a través de la tecnología
@@ -36,20 +36,42 @@ const bg_url = `url(${import.meta.env.BASE_URL}/hero-image.webp)`;
                         incluye en las aulas.
                     </p>
                 </div>
+                
+                <!-- Call to Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 mt-6 self-start">
+                    <a 
+                        href="/research"
+                        class="bg-Shiraz-700 hover:bg-Shiraz-800 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 text-center transform hover:scale-105"
+                        aria-label="Ver nuestras investigaciones"
+                    >
+                        Nuestras Investigaciones
+                    </a>
+                    <a 
+                        href="/projects"
+                        class="border-2 border-cod_gray-50 hover:bg-cod_gray-50 hover:text-cod_gray-900 text-cod_gray-50 px-6 py-3 rounded-lg font-semibold transition-all duration-300 text-center transform hover:scale-105"
+                        aria-label="Ver nuestros proyectos"
+                    >
+                        Ver Proyectos
+                    </a>
+                </div>
             </div>
-        </div>
-        <div
-            class="bg-cod_gray-50 px-10 py-20 gap-10 flex flex-col sm:flex-row w-full max-w-[1140px] mx-auto"
-        >
-            <div class="flex flex-col justify-center">
-                <h2 class="text-2xl font-semibold mb-5">¿Quienes somos?</h2>
+        </section>
 
-                <p>
+        <!-- About Section -->
+        <section
+            class="bg-cod_gray-50 px-10 py-20 gap-10 flex flex-col lg:flex-row w-full max-w-[1140px] mx-auto"
+            aria-label="Información sobre el grupo"
+        >
+            <div class="flex flex-col justify-center lg:w-1/2">
+                <h2 class="text-3xl font-semibold mb-6 text-cod_gray-900">¿Quiénes somos?</h2>
+
+                <p class="text-lg leading-relaxed mb-6 text-cod_gray-700">
                     Somos un grupo de investigación en educación de la
                     <a
                         href="https://uninorte.edu.co"
                         target="_blank"
-                        class="font-semibold italic text-daisy_bush-600"
+                        rel="noopener noreferrer"
+                        class="font-semibold italic text-daisy_bush-600 hover:text-daisy_bush-800 transition-colors duration-200 underline decoration-2 underline-offset-2"
                         >Universidad del Norte</a
                     > de Barranquilla, Colombia. Buscamos generar conocimiento y
                     formular soluciones innovadoras que den respuesta a las necesidades
@@ -58,17 +80,142 @@ const bg_url = `url(${import.meta.env.BASE_URL}/hero-image.webp)`;
                     la comunicación en la educación y la comunicación humana.
                 </p>
             </div>
-            <div class="flex items-center justify-center">
+            <div class="flex items-center justify-center lg:w-1/2">
                 <img
                     src={GroupImage.src}
-                    alt="Foto grupal 2021"
-                    class="rounded-lg"
+                    alt="Foto grupal del equipo GIEU 2021"
+                    class="rounded-lg shadow-lg max-w-full h-auto transform hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
                 />
             </div>
-        </div>
-    </div>
+        </section>
 
-    <style define:vars={{ bg_url }}>
+        <!-- Features Section -->
+        <section class="bg-cod_gray-100 py-20" aria-label="Nuestros enfoques">
+            <div class="max-w-[1140px] mx-auto px-10">
+                <h2 class="text-3xl font-semibold text-center mb-12 text-cod_gray-900">
+                    Nuestros Enfoques de Investigación
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                        <div class="text-Shiraz-700 text-4xl mb-4">🔬</div>
+                        <h3 class="text-xl font-semibold mb-3 text-cod_gray-900">Investigación STEM</h3>
+                        <p class="text-cod_gray-700">
+                            Desarrollamos metodologías innovadoras para la enseñanza de ciencias, tecnología, 
+                            ingeniería y matemáticas en todos los niveles educativos.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                        <div class="text-daisy_bush-700 text-4xl mb-4">💻</div>
+                        <h3 class="text-xl font-semibold mb-3 text-cod_gray-900">Tecnología Educativa</h3>
+                        <p class="text-cod_gray-700">
+                            Integramos herramientas tecnológicas en el aula para mejorar los procesos 
+                            de enseñanza-aprendizaje y desarrollar competencias digitales.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                        <div class="text-Shiraz-700 text-4xl mb-4">🎯</div>
+                        <h3 class="text-xl font-semibold mb-3 text-cod_gray-900">Inclusión Educativa</h3>
+                        <p class="text-cod_gray-700">
+                            Promovemos la equidad en el acceso a la educación STEM, 
+                            especialmente para grupos tradicionalmente subrepresentados.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section relative overflow-hidden py-24" aria-label="Estadísticas del grupo">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-10 left-10 w-32 h-32 bg-Shiraz-400 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-20 right-20 w-40 h-40 bg-daisy_bush-400 rounded-full blur-3xl"></div>
+                <div class="absolute top-1/2 left-1/3 w-24 h-24 bg-Shiraz-600 rounded-full blur-2xl"></div>
+            </div>
+            
+            <div class="max-w-[1140px] mx-auto px-10 relative z-10">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                        Nuestro <span class="bg-gradient-to-r from-Shiraz-400 to-daisy_bush-400 bg-clip-text text-transparent">Impacto</span>
+                    </h2>
+                    <p class="text-xl text-cod_gray-300 max-w-2xl mx-auto">
+                        Más de una década transformando la educación STEM en Colombia y la región
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Stat Card 1 -->
+                    <div class="stat-card group">
+                        <div class="stat-card-inner">
+                            <div class="stat-icon">
+                                📚
+                            </div>
+                            <div class="stat-number text-Shiraz-400">
+                                15+
+                            </div>
+                            <p class="stat-label">Años de experiencia</p>
+                            <div class="stat-description">
+                                Investigando y desarrollando soluciones educativas innovadoras
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stat Card 2 -->
+                    <div class="stat-card group">
+                        <div class="stat-card-inner">
+                            <div class="stat-icon">
+                                🚀
+                            </div>
+                            <div class="stat-number text-daisy_bush-400">
+                                50+
+                            </div>
+                            <p class="stat-label">Proyectos desarrollados</p>
+                            <div class="stat-description">
+                                Iniciativas que han impactado miles de estudiantes
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stat Card 3 -->
+                    <div class="stat-card group">
+                        <div class="stat-card-inner">
+                            <div class="stat-icon">
+                                📄
+                            </div>
+                            <div class="stat-number text-Shiraz-400">
+                                100+
+                            </div>
+                            <p class="stat-label">Publicaciones científicas</p>
+                            <div class="stat-description">
+                                Contribuciones al conocimiento científico global
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Achievement Badges -->
+                <div class="mt-16 flex flex-wrap justify-center items-center gap-6">
+                    <div class="achievement-badge">
+                        <span class="text-yellow-400 text-2xl">🏆</span>
+                        <span class="text-sm">Reconocimiento Internacional</span>
+                    </div>
+                    <div class="achievement-badge">
+                        <span class="text-green-400 text-2xl">🌟</span>
+                        <span class="text-sm">Impacto Social</span>
+                    </div>
+                    <div class="achievement-badge">
+                        <span class="text-blue-400 text-2xl">🎯</span>
+                        <span class="text-sm">Innovación Educativa</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <style>
         .bg-hero-image {
             background: linear-gradient(
                     0deg,
@@ -80,8 +227,173 @@ const bg_url = `url(${import.meta.env.BASE_URL}/hero-image.webp)`;
                     rgba(22, 22, 22, 0.6) 0%,
                     rgba(0, 0, 0, 0) 100%
                 ),
-                var(--bg_url);
+                url('/hero-image.webp');
             @apply bg-center bg-no-repeat bg-cover;
+        }
+
+        /* Stats Section Styles */
+        .stats-section {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            position: relative;
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+        }
+
+        .stat-card {
+            @apply relative h-full;
+            perspective: 1000px;
+        }
+
+        .stat-card-inner {
+            @apply relative w-full h-full;
+            @apply bg-gradient-to-br from-cod_gray-800/80 to-cod_gray-900/80;
+            @apply backdrop-blur-sm border border-cod_gray-700/50;
+            @apply rounded-2xl p-8 text-center;
+            @apply transition-all duration-500 ease-in-out;
+            @apply hover:transform hover:scale-105 hover:-translate-y-2;
+            @apply shadow-xl hover:shadow-2xl;
+            transform-style: preserve-3d;
+        }
+
+        .stat-card:hover .stat-card-inner {
+            @apply border-Shiraz-500/50 shadow-Shiraz-500/20;
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%);
+        }
+
+        .stat-card-inner::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            background: linear-gradient(45deg, transparent, rgba(168, 85, 247, 0.3), transparent);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover .stat-card-inner::before {
+            opacity: 1;
+        }
+
+        .stat-icon {
+            @apply text-5xl mb-4;
+            @apply transform transition-transform duration-300;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .stat-card:hover .stat-icon {
+            @apply scale-110;
+        }
+
+        .stat-number {
+            @apply text-6xl font-bold mb-2;
+            @apply bg-gradient-to-r from-current to-current bg-clip-text;
+            @apply transition-all duration-300;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, currentColor 0%, currentColor 50%, rgba(255, 255, 255, 0.8) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .stat-label {
+            @apply text-xl font-semibold text-cod_gray-200 mb-3;
+            @apply transition-colors duration-300;
+        }
+
+        .stat-card:hover .stat-label {
+            @apply text-white;
+        }
+
+        .stat-description {
+            @apply text-sm text-cod_gray-400 leading-relaxed;
+            @apply transition-colors duration-300;
+            @apply opacity-0 transform translate-y-2;
+        }
+
+        .stat-card:hover .stat-description {
+            @apply opacity-100 transform translate-y-0 text-cod_gray-300;
+        }
+
+        .achievement-badge {
+            @apply flex items-center gap-2 px-4 py-2;
+            @apply bg-cod_gray-800/60 border border-cod_gray-600/50;
+            @apply rounded-full backdrop-blur-sm;
+            @apply text-cod_gray-300 text-sm font-medium;
+            @apply transition-all duration-300;
+            @apply hover:bg-cod_gray-700/80 hover:border-cod_gray-500/70;
+            @apply hover:scale-105 hover:shadow-lg;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 1s ease-out;
+        }
+
+        /* Smooth scrolling for anchor links */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Hover effects for cards */
+        .bg-white {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .bg-white:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Counter animation */
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .stat-number {
+            animation: countUp 0.8s ease-out forwards;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .stat-card-inner {
+                @apply p-6;
+            }
+            
+            .stat-number {
+                @apply text-5xl;
+            }
+            
+            .stat-icon {
+                @apply text-4xl;
+            }
         }
     </style>
 </BaseLayout>

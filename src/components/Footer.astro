@@ -9,69 +9,542 @@ import Contact from "./common/Contact.astro";
 import { SHORT_NAME, LEMA } from "../consts";
 
 const year = new Date().getFullYear();
-const bg_url = `url(${import.meta.env.BASE_URL}/patterns/bg.webp)`;
+const bg_url = `url('/patterns/bg.webp')`;
 ---
 
-<footer class="bg-cod_gray-950 text-cod_gray-50 text-sm">
-    <div
-        id="lema"
-        class="flex flex-col items-center gap-4 sm:grid sm:grid-cols-3 px-5 py-10 bg-main-pattern text-center"
-    >
-        <div class="flex justify-center">
-            <img
-                src={brand.src}
-                alt="Grupo de Investigación en informática educativa"
-                width={200}
-                loading="lazy"
-                decoding="async"
-            />
-        </div>
-        <div class="flex items-center justify-center col-span-2">
-            <p class="text-2xl bold">{LEMA}</p>
-        </div>
+<footer class="footer-container relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="footer-bg-pattern absolute inset-0"></div>
+    
+    <!-- Animated Background Elements -->
+    <div class="footer-bg-animation absolute inset-0 opacity-20">
+        <div class="floating-element floating-1"></div>
+        <div class="floating-element floating-2"></div>
+        <div class="floating-element floating-3"></div>
     </div>
-    <div
-        id="main-footer"
-        class="flex flex-col sm:grid sm:grid-cols-2 p-5 pt-10 sm:py-3"
-    >
-        <div class="flex justify-center flex-row gap-5">
-            <img
-                src={brand_sm.src}
-                alt="GIEd"
-                width={35}
-                loading="lazy"
-                decoding="async"
-            />
-            <div class="flex flex-row gap-4 items-center">
-                <Contact loading="lazy" />
+    
+    <div class="relative z-10">
+        <!-- Main Footer Content -->
+        <div id="main-footer" class="max-w-6xl mx-auto px-6 py-12">
+            <div class="footer-main-grid">
+                <!-- Brand Section -->
+                <div class="footer-section lg:col-span-1 mb-8 lg:mb-0">
+                    <div class="flex items-center gap-3 mb-6 justify-center lg:justify-start">
+                        <img
+                            src={brand_sm.src}
+                            alt="GIEU"
+                            width={45}
+                            height={45}
+                            loading="lazy"
+                            decoding="async"
+                            class="footer-logo"
+                        />
+                        <div class="text-center lg:text-left">
+                            <h3 class="text-xl font-bold text-white">{SHORT_NAME}</h3>
+                            <p class="text-xs text-cod_gray-300 font-medium">Universidad del Norte</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="footer-social">
+                        <h4 class="text-base font-semibold text-white mb-4 flex items-center gap-2 justify-center lg:justify-start">
+                            <span class="text-lg">🌐</span>
+                            Conecta con nosotros
+                        </h4>
+                        <div class="flex gap-3 justify-center lg:justify-start">
+                            <Contact />
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="footer-section lg:col-span-2">
+                    <h4 class="footer-title flex items-center gap-2 mb-6 justify-center lg:justify-start">
+                        <span class="text-lg">📍</span>
+                        Información de Contacto
+                    </h4>
+                    <div class="footer-contact-grid">
+                        <div class="footer-contact-item-compact">
+                            <span class="footer-contact-icon-compact">🏛️</span>
+                            <div>
+                                <p class="text-white font-semibold text-sm mb-1">Universidad del Norte</p>
+                                <p class="text-cod_gray-300 text-xs leading-relaxed">Km 5 Vía Puerto Colombia<br>Barranquilla, Atlántico<br>Colombia</p>
+                            </div>
+                        </div>
+                        
+                        <div class="footer-contact-item-compact">
+                            <span class="footer-contact-icon-compact">📧</span>
+                            <div>
+                                <p class="text-white font-semibold text-sm mb-1">Contacto</p>
+                                <a href="mailto:contacto@gieu.edu.co" class="text-Shiraz-300 hover:text-Shiraz-200 transition-colors duration-300 text-xs font-medium block mb-1">
+                                    contacto@gieu.edu.co
+                                </a>
+                                <p class="text-cod_gray-400 text-xs">Respuesta en 24-48 horas</p>
+                            </div>
+                        </div>
+                        
+                        <div class="footer-contact-item-compact">
+                            <span class="footer-contact-icon-compact">🌐</span>
+                            <div>
+                                <p class="text-white font-semibold text-sm mb-1">Sitio Web</p>
+                                <a href="https://www.uninorte.edu.co" target="_blank" rel="noopener noreferrer" class="text-daisy_bush-300 hover:text-daisy_bush-200 transition-colors duration-300 text-xs font-medium block mb-1">
+                                    uninorte.edu.co
+                                </a>
+                                <p class="text-cod_gray-400 text-xs">Portal institucional</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Copyright Section -->
+            <div class="border-t border-cod_gray-700/50 mt-8 pt-6">
+                <div class="footer-copyright-flex">
+                    <div class="text-center md:text-left">
+                        <p class="text-cod_gray-400 text-sm">
+                            © {year} <span class="text-white font-semibold">{SHORT_NAME}</span>
+                        </p>
+                        <p class="text-cod_gray-500 text-xs">Todos los derechos reservados</p>
+                    </div>
+                    
+                    <div class="footer-copyright-made-with">
+                        <span>Hecho con</span>
+                        <span class="text-red-400 animate-pulse text-base">❤️</span>
+                        <span>por el equipo GIEU</span>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="flex flex-row justify-center p-5 gap-4">
-            <!-- <a href="/">Sobre GIEd</a>
-            <a href="/projects">Proyectos</a>
-            <a href="/research">Investigación</a> -->
-        </div>
-    </div>
-    <div id="copyright" class="p-3 text-center">
-        © {year}
-        {SHORT_NAME}. Todos los derechos reservados
     </div>
 </footer>
 
 <style define:vars={{ bg_url }}>
-    .bg-main-pattern {
-        @apply bg-Shiraz-800;
+    .footer-container {
+        @apply bg-cod_gray-950 text-cod_gray-50;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        position: relative;
+    }
+
+    .footer-bg-pattern {
         background: linear-gradient(
                 0deg,
-                rgba(18, 18, 18, 0.4) 0%,
-                rgba(18, 18, 18, 0.4) 100%
+                rgba(15, 23, 42, 0.8) 0%,
+                rgba(30, 41, 59, 0.6) 50%,
+                rgba(15, 23, 42, 0.9) 100%
             ),
             linear-gradient(
-                90deg,
-                rgba(22, 22, 22, 0.6) 0%,
-                rgba(0, 0, 0, 0) 100%
+                45deg,
+                rgba(168, 85, 247, 0.05) 0%,
+                transparent 50%,
+                rgba(236, 72, 153, 0.05) 100%
             ),
             var(--bg_url);
         @apply bg-no-repeat bg-center bg-cover;
+        background-size: cover, 200% 200%, cover;
+        animation: patternShift 20s ease-in-out infinite;
+    }
+
+    @keyframes patternShift {
+        0%, 100% { background-position: center, 0% 50%, center; }
+        50% { background-position: center, 100% 50%, center; }
+    }
+
+    /* Floating Background Elements */
+    .footer-bg-animation {
+        pointer-events: none;
+    }
+
+    .floating-element {
+        @apply absolute rounded-full;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%);
+        filter: blur(1px);
+    }
+
+    .floating-1 {
+        @apply w-32 h-32 top-10 left-10;
+        animation: float1 15s ease-in-out infinite;
+    }
+
+    .floating-2 {
+        @apply w-24 h-24 bottom-20 right-20;
+        background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
+        animation: float2 18s ease-in-out infinite reverse;
+    }
+
+    .floating-3 {
+        @apply w-16 h-16 top-1/2 left-1/3;
+        animation: float3 12s ease-in-out infinite;
+    }
+
+    @keyframes float1 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        25% { transform: translate(20px, -15px) scale(1.1); }
+        50% { transform: translate(-10px, -25px) scale(0.9); }
+        75% { transform: translate(-15px, 10px) scale(1.05); }
+    }
+
+    @keyframes float2 {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        33% { transform: translate(-20px, 15px) rotate(120deg); }
+        66% { transform: translate(15px, -20px) rotate(240deg); }
+    }
+
+    @keyframes float3 {
+        0%, 100% { transform: translateY(0px) scale(1); }
+        50% { transform: translateY(-20px) scale(1.2); }
+    }
+
+    /* Footer Sections */
+    .footer-section {
+        @apply transition-all duration-500;
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .footer-section:nth-child(1) { 
+        animation-delay: 0.2s; 
+    }
+    
+    .footer-section:nth-child(2) { 
+        animation-delay: 0.4s; 
+    }
+
+    .footer-section:hover {
+        @apply transform -translate-y-2;
+    }
+
+    .footer-logo {
+        @apply transition-all duration-300 hover:scale-125;
+        filter: drop-shadow(0 4px 12px rgba(168, 85, 247, 0.3));
+    }
+
+    .footer-logo:hover {
+        filter: drop-shadow(0 6px 20px rgba(168, 85, 247, 0.5));
+    }
+
+    .footer-title {
+        @apply text-xl font-bold text-white;
+        @apply relative;
+        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+    }
+
+    .footer-title::after {
+        content: '';
+        @apply absolute -bottom-2 left-0 w-12 h-1;
+        @apply bg-gradient-to-r from-Shiraz-500 to-daisy_bush-500;
+        @apply transition-all duration-500;
+        border-radius: 2px;
+    }
+
+    .footer-section:hover .footer-title::after {
+        @apply w-20;
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+    }
+
+    /* Social Links */
+    .footer-social {
+        @apply transition-all duration-300;
+    }
+
+    .footer-social:hover {
+        @apply transform scale-105;
+    }
+
+    /* Contact Items */
+    .footer-contact-item {
+        @apply flex items-start gap-4;
+        @apply p-4 rounded-xl;
+        @apply transition-all duration-300;
+        @apply hover:bg-cod_gray-800/60 hover:transform hover:translate-x-2;
+        @apply border border-transparent hover:border-cod_gray-700/50;
+    }
+
+    .footer-contact-item:hover {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Compact Contact Items */
+    .footer-contact-item-compact {
+        @apply flex items-start gap-3;
+        @apply p-3 rounded-lg;
+        @apply transition-all duration-300;
+        @apply hover:bg-cod_gray-800/40 hover:transform hover:scale-105;
+        @apply border border-transparent hover:border-cod_gray-700/30;
+        min-height: 80px;
+    }
+
+    .footer-contact-item-compact:hover {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .footer-contact-icon {
+        @apply text-xl;
+        @apply transition-all duration-300;
+        @apply flex-shrink-0;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .footer-contact-item:hover .footer-contact-icon {
+        @apply transform scale-125 rotate-12;
+    }
+
+    .footer-contact-icon-compact {
+        @apply text-lg;
+        @apply transition-all duration-300;
+        @apply flex-shrink-0;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        margin-top: 2px;
+    }
+
+    .footer-contact-item-compact:hover .footer-contact-icon-compact {
+        @apply transform scale-110 rotate-6;
+    }
+
+    /* Contact links hover effects */
+    .footer-contact-item a {
+        @apply relative;
+        @apply transition-all duration-300;
+    }
+
+    .footer-contact-item a::after {
+        content: '';
+        @apply absolute bottom-0 left-0 w-0 h-0.5;
+        @apply bg-current;
+        @apply transition-all duration-300;
+    }
+
+    .footer-contact-item a:hover::after {
+        @apply w-full;
+    }
+
+    /* Responsive improvements */
+    @media (max-width: 1024px) {
+        #main-footer {
+            @apply max-w-5xl px-5 py-10;
+        }
+        
+        .footer-contact-item-compact {
+            min-height: 70px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        #main-footer {
+            @apply py-8 px-4 max-w-full;
+        }
+        
+        .footer-section {
+            @apply text-center gap-6;
+        }
+        
+        .footer-contact-item {
+            @apply justify-center text-center flex-col;
+        }
+        
+        .footer-contact-item div {
+            @apply flex-col items-center;
+        }
+        
+        .footer-contact-item:hover {
+            @apply transform translate-x-0 scale-105;
+        }
+        
+        .footer-contact-item-compact {
+            @apply mb-4 justify-center items-center flex-col text-center p-4;
+            min-height: 80px;
+        }
+        
+        .footer-contact-item-compact div {
+            @apply text-center flex flex-col items-center;
+        }
+        
+        .footer-contact-item-compact p, 
+        .footer-contact-item-compact a {
+            @apply text-center;
+        }
+        
+        .footer-section:hover {
+            @apply transform translate-y-0 scale-105;
+        }
+        
+        .footer-contact-icon-compact {
+            @apply text-lg mb-2;
+            margin-top: 0;
+        }
+        
+        /* Grid responsive para contacto */
+        .footer-section:last-child .grid {
+            @apply grid-cols-1 gap-4;
+        }
+    }
+
+    @media (max-width: 640px) {
+        #main-footer {
+            @apply py-6 px-3;
+        }
+        
+        .footer-contact-item-compact {
+            @apply gap-3 p-4 mx-auto;
+            min-height: 70px;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .footer-contact-icon-compact {
+            @apply text-lg mb-2;
+            margin-top: 0;
+        }
+        
+        .footer-section {
+            @apply mb-6;
+        }
+        
+        .footer-section:last-child {
+            @apply mb-0;
+        }
+        
+        /* Mejor spacing para el brand en móvil */
+        .footer-section .flex.items-center {
+            @apply gap-2 justify-center;
+        }
+        
+        .footer-logo {
+            @apply w-10 h-10;
+        }
+        
+        /* Copyright más compacto en móvil */
+        .footer-section + div {
+            @apply mt-6 pt-4;
+        }
+        
+        .footer-section + div .flex {
+            @apply gap-3;
+        }
+        
+        .footer-section + div .flex:last-child {
+            @apply text-xs gap-1;
+        }
+        
+        /* Asegurar centrado perfecto en contacto */
+        .footer-contact-grid {
+            @apply flex flex-col items-center gap-6;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #main-footer {
+            @apply py-5 px-2;
+        }
+        
+        .footer-contact-item-compact {
+            @apply gap-2 p-2;
+            min-height: 60px;
+        }
+        
+        .footer-contact-icon-compact {
+            @apply text-sm;
+        }
+        
+        .footer-section h3 {
+            @apply text-lg;
+        }
+        
+        .footer-title {
+            @apply text-lg;
+        }
+        
+        /* Texto más pequeño en pantallas muy pequeñas */
+        .text-sm {
+            @apply text-xs;
+        }
+        
+        .text-xs {
+            font-size: 0.6rem;
+            line-height: 0.75rem;
+        }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Hover effects for the entire footer */
+    .footer-container:hover .footer-bg-pattern {
+        background-size: cover, 250% 250%, cover;
+        animation-duration: 15s;
+    }
+
+    /* Pulse animation for heart */
+    @keyframes heartPulse {
+        0%, 100% { 
+            transform: scale(1); 
+        }
+        50% { 
+            transform: scale(1.2); 
+        }
+    }
+
+    .animate-pulse {
+        animation: heartPulse 2s ease-in-out infinite;
+    }
+
+    /* Copyright section styling */
+    .footer-container .border-t {
+        border-image: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.3), transparent) 1;
+    }
+
+    /* Grid responsive helper classes */
+    .footer-main-grid {
+        @apply grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10;
+    }
+    
+    .footer-contact-grid {
+        @apply grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6;
+    }
+    
+    @media (max-width: 768px) {
+        .footer-main-grid {
+            @apply gap-6;
+        }
+        
+        .footer-contact-grid {
+            @apply grid-cols-1 gap-6 place-items-center;
+            width: 100%;
+        }
+        
+        .footer-contact-grid .footer-contact-item-compact {
+            @apply w-full max-w-sm;
+        }
+    }
+    
+    .footer-copyright-flex {
+        @apply flex flex-col md:flex-row justify-between items-center gap-4;
+    }
+    
+    .footer-copyright-made-with {
+        @apply flex items-center gap-2 text-cod_gray-500 text-sm;
+    }
+    
+    @media (max-width: 640px) {
+        .footer-copyright-flex {
+            @apply gap-3;
+        }
+        
+        .footer-copyright-made-with {
+            @apply text-xs gap-1;
+        }
     }
 </style>
