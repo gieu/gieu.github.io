@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 .md
 .ts
+
+# config files
+nginx.conf
+deploy.sh
