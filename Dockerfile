@@ -40,7 +40,7 @@ RUN chown -R astro:nodejs /app
 
 # Set environment variables
 ENV HOST=0.0.0.0
-ENV PORT=4321
+ENV PORT=8517
 ENV NODE_ENV=production
 
 # Switch to non-root user
