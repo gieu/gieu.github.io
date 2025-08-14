@@ -1,6 +1,21 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Contact from "../components/common/Contact.astro";
+import { obtenerEquipo } from "../utils/googleSheets";
+import type { MiembroEquipo } from "../utils/googleSheets";
+
+// Obtener datos del equipo desde Google Sheets
+const miembrosEquipo: MiembroEquipo[] = await obtenerEquipo();
+
+// Filtrar por niveles
+const lideres = miembrosEquipo.filter(miembro => miembro.nivel === 'lider');
+const investigadores = miembrosEquipo.filter(miembro => miembro.nivel === 'investigador');
+const estudiantes = miembrosEquipo.filter(miembro => miembro.nivel === 'estudiante');
+
+// Función para obtener iniciales
+function obtenerIniciales(nombre: string, apellido: string): string {
+  return `${nombre.charAt(0)}${apellido.charAt(0)}`.toUpperCase();
+}
 ---
 
 <BaseLayout title="Equipo - GIEU - Grupo de Investigación en Informática Educativa">
@@ -41,74 +56,35 @@ import Contact from "../components/common/Contact.astro";
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Team Leader 1 -->
-                    <div class="team-card group">
-                        <div class="team-card-inner">
-                            <div class="team-image-container">
-                                <div class="team-image-placeholder">
-                                    <span class="team-initials">DR</span>
+                    {lideres.map((lider) => (
+                        <div class="team-card group">
+                            <div class="team-card-inner">
+                                <div class="team-image-container">
+                                    {lider.imagen_url ? (
+                                        <img
+                                            src={lider.imagen_url}
+                                            alt={`${lider.nombre} ${lider.apellido}`}
+                                            class="team-image"
+                                            loading="lazy"
+                                        />
+                                    ) : (
+                                        <div class={`team-image-placeholder bg-gradient-to-br ${lider.color_gradiente}`}>
+                                            <span class="team-initials">{obtenerIniciales(lider.nombre, lider.apellido)}</span>
+                                        </div>
+                                    )}
+                                    <div class="team-image-overlay"></div>
                                 </div>
-                                <div class="team-image-overlay"></div>
-                            </div>
-                            <div class="team-info">
-                                <h3 class="team-name">Director del Grupo</h3>
-                                <p class="team-title">Investigador Principal</p>
-                                <p class="team-description">
-                                    Especialista en tecnología educativa y metodologías de enseñanza STEM
-                                </p>
-                                <div class="team-expertise">
-                                    <span class="expertise-tag">Educación STEM</span>
-                                    <span class="expertise-tag">Tecnología Educativa</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Team Leader 2 -->
-                    <div class="team-card group">
-                        <div class="team-card-inner">
-                            <div class="team-image-container">
-                                <div class="team-image-placeholder">
-                                    <span class="team-initials">CO</span>
-                                </div>
-                                <div class="team-image-overlay"></div>
-                            </div>
-                            <div class="team-info">
-                                <h3 class="team-name">Coordinador Académico</h3>
-                                <p class="team-title">Investigador Senior</p>
-                                <p class="team-description">
-                                    Experto en pedagogía digital y desarrollo de competencias matemáticas
-                                </p>
-                                <div class="team-expertise">
-                                    <span class="expertise-tag">Pedagogía Digital</span>
-                                    <span class="expertise-tag">Matemáticas</span>
+                                <div class="team-info">
+                                    <h3 class="team-name">{lider.nombre} {lider.apellido}</h3>
+                                    <p class="team-title">{lider.cargo}</p>
+                                    <p class="team-subtitle">{lider.titulo_academico}</p>
+                                    <p class="team-description">
+                                        {lider.descripcion}
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Team Leader 3 -->
-                    <div class="team-card group">
-                        <div class="team-card-inner">
-                            <div class="team-image-container">
-                                <div class="team-image-placeholder">
-                                    <span class="team-initials">IN</span>
-                                </div>
-                                <div class="team-image-overlay"></div>
-                            </div>
-                            <div class="team-info">
-                                <h3 class="team-name">Coordinadora de Investigación</h3>
-                                <p class="team-title">Investigadora Senior</p>
-                                <p class="team-description">
-                                    Especialista en inclusión educativa y equidad en STEM
-                                </p>
-                                <div class="team-expertise">
-                                    <span class="expertise-tag">Inclusión Educativa</span>
-                                    <span class="expertise-tag">Equidad STEM</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </div>
         </section>
@@ -124,117 +100,28 @@ import Contact from "../components/common/Contact.astro";
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Researcher 1 -->
-                    <div class="researcher-card group">
-                        <div class="researcher-image-container">
-                            <div class="researcher-image-placeholder">
-                                <span class="researcher-initials">MC</span>
+                    {investigadores.map((investigador) => (
+                        <div class="researcher-card group">
+                            <div class="researcher-image-container">
+                                {investigador.imagen_url ? (
+                                    <img
+                                        src={investigador.imagen_url}
+                                        alt={`${investigador.nombre} ${investigador.apellido}`}
+                                        class="researcher-image"
+                                        loading="lazy"
+                                    />
+                                ) : (
+                                    <div class={`researcher-image-placeholder bg-gradient-to-br ${investigador.color_gradiente}`}>
+                                        <span class="researcher-initials">{obtenerIniciales(investigador.nombre, investigador.apellido)}</span>
+                                    </div>
+                                )}
+                            </div>
+                            <div class="researcher-info">
+                                <h4 class="researcher-name">{investigador.nombre} {investigador.apellido}</h4>
+                                <p class="researcher-role">{investigador.titulo_academico}</p>
                             </div>
                         </div>
-                        <div class="researcher-info">
-                            <h4 class="researcher-name">Investigador 1</h4>
-                            <p class="researcher-role">Magister en Educación</p>
-                            <p class="researcher-focus">Tecnologías Emergentes</p>
-                        </div>
-                    </div>
-
-                    <!-- Researcher 2 -->
-                    <div class="researcher-card group">
-                        <div class="researcher-image-container">
-                            <div class="researcher-image-placeholder">
-                                <span class="researcher-initials">AI</span>
-                            </div>
-                        </div>
-                        <div class="researcher-info">
-                            <h4 class="researcher-name">Investigadora 2</h4>
-                            <p class="researcher-role">Doctora en Ciencias</p>
-                            <p class="researcher-focus">Análisis de Datos</p>
-                        </div>
-                    </div>
-
-                    <!-- Researcher 3 -->
-                    <div class="researcher-card group">
-                        <div class="researcher-image-container">
-                            <div class="researcher-image-placeholder">
-                                <span class="researcher-initials">RB</span>
-                            </div>
-                        </div>
-                        <div class="researcher-info">
-                            <h4 class="researcher-name">Investigador 3</h4>
-                            <p class="researcher-role">Ingeniero de Software</p>
-                            <p class="researcher-focus">Desarrollo Educativo</p>
-                        </div>
-                    </div>
-
-                    <!-- Researcher 4 -->
-                    <div class="researcher-card group">
-                        <div class="researcher-image-container">
-                            <div class="researcher-image-placeholder">
-                                <span class="researcher-initials">LS</span>
-                            </div>
-                        </div>
-                        <div class="researcher-info">
-                            <h4 class="researcher-name">Investigadora 4</h4>
-                            <p class="researcher-role">Psicóloga Educativa</p>
-                            <p class="researcher-focus">Cognición y Aprendizaje</p>
-                        </div>
-                    </div>
-
-                    <!-- Researcher 5 -->
-                    <div class="researcher-card group">
-                        <div class="researcher-image-container">
-                            <div class="researcher-image-placeholder">
-                                <span class="researcher-initials">JM</span>
-                            </div>
-                        </div>
-                        <div class="researcher-info">
-                            <h4 class="researcher-name">Investigador 5</h4>
-                            <p class="researcher-role">Especialista en TIC</p>
-                            <p class="researcher-focus">Innovación Pedagógica</p>
-                        </div>
-                    </div>
-
-                    <!-- Researcher 6 -->
-                    <div class="researcher-card group">
-                        <div class="researcher-image-container">
-                            <div class="researcher-image-placeholder">
-                                <span class="researcher-initials">AD</span>
-                            </div>
-                        </div>
-                        <div class="researcher-info">
-                            <h4 class="researcher-name">Investigadora 6</h4>
-                            <p class="researcher-role">Matemática Aplicada</p>
-                            <p class="researcher-focus">Modelado Educativo</p>
-                        </div>
-                    </div>
-
-                    <!-- Researcher 7 -->
-                    <div class="researcher-card group">
-                        <div class="researcher-image-container">
-                            <div class="researcher-image-placeholder">
-                                <span class="researcher-initials">FT</span>
-                            </div>
-                        </div>
-                        <div class="researcher-info">
-                            <h4 class="researcher-name">Investigador 7</h4>
-                            <p class="researcher-role">Diseñador UX/UI</p>
-                            <p class="researcher-focus">Experiencia de Usuario</p>
-                        </div>
-                    </div>
-
-                    <!-- Researcher 8 -->
-                    <div class="researcher-card group">
-                        <div class="researcher-image-container">
-                            <div class="researcher-image-placeholder">
-                                <span class="researcher-initials">MR</span>
-                            </div>
-                        </div>
-                        <div class="researcher-info">
-                            <h4 class="researcher-name">Investigadora 8</h4>
-                            <p class="researcher-role">Comunicadora Social</p>
-                            <p class="researcher-focus">Divulgación Científica</p>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </div>
         </section>
@@ -249,55 +136,27 @@ import Contact from "../components/common/Contact.astro";
                     </p>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <!-- Student placeholders -->
-                    <div class="student-card">
-                        <div class="student-image-placeholder">
-                            <span class="student-initials">E1</span>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                    {estudiantes.map((estudiante) => (
+                        <div class="student-card">
+                            {estudiante.imagen_url ? (
+                                <img
+                                    src={estudiante.imagen_url}
+                                    alt={`${estudiante.nombre} ${estudiante.apellido}`}
+                                    class="student-image mx-auto mb-3"
+                                    loading="lazy"
+                                />
+                            ) : (
+                                <div class={`student-image-placeholder bg-gradient-to-br ${estudiante.color_gradiente}`}>
+                                    <span class="student-initials">{obtenerIniciales(estudiante.nombre, estudiante.apellido)}</span>
+                                </div>
+                            )}
+                            <div class="student-info">
+                                <p class="student-name">{estudiante.nombre} {estudiante.apellido}</p>
+                                <p class="student-program">{estudiante.titulo_academico}</p>
+                            </div>
                         </div>
-                        <p class="student-name">Estudiante 1</p>
-                        <p class="student-program">Pregrado</p>
-                    </div>
-
-                    <div class="student-card">
-                        <div class="student-image-placeholder">
-                            <span class="student-initials">E2</span>
-                        </div>
-                        <p class="student-name">Estudiante 2</p>
-                        <p class="student-program">Maestría</p>
-                    </div>
-
-                    <div class="student-card">
-                        <div class="student-image-placeholder">
-                            <span class="student-initials">E3</span>
-                        </div>
-                        <p class="student-name">Estudiante 3</p>
-                        <p class="student-program">Pregrado</p>
-                    </div>
-
-                    <div class="student-card">
-                        <div class="student-image-placeholder">
-                            <span class="student-initials">E4</span>
-                        </div>
-                        <p class="student-name">Estudiante 4</p>
-                        <p class="student-program">Doctorado</p>
-                    </div>
-
-                    <div class="student-card">
-                        <div class="student-image-placeholder">
-                            <span class="student-initials">E5</span>
-                        </div>
-                        <p class="student-name">Estudiante 5</p>
-                        <p class="student-program">Maestría</p>
-                    </div>
-
-                    <div class="student-card">
-                        <div class="student-image-placeholder">
-                            <span class="student-initials">E6</span>
-                        </div>
-                        <p class="student-name">Estudiante 6</p>
-                        <p class="student-program">Pregrado</p>
-                    </div>
+                    ))}
                 </div>
             </div>
         </section>
@@ -380,7 +239,9 @@ import Contact from "../components/common/Contact.astro";
         }
 
         .student-image {
-            @apply w-16 h-16;
+            @apply w-20 h-20 rounded-full object-cover;
+            @apply shadow-md transition-transform duration-300;
+            @apply border-2 border-white;
         }
 
         .team-card:hover .team-image-placeholder {
@@ -425,22 +286,13 @@ import Contact from "../components/common/Contact.astro";
             @apply uppercase tracking-wide;
         }
 
+        .team-subtitle {
+            @apply text-xs text-cod_gray-500 mb-3;
+            @apply italic;
+        }
+
         .team-description {
             @apply text-cod_gray-600 leading-relaxed mb-6 flex-1;
-        }
-
-        .team-expertise {
-            @apply flex flex-wrap gap-2 justify-center;
-        }
-
-        .expertise-tag {
-            @apply px-3 py-1 bg-cod_gray-100 text-cod_gray-700;
-            @apply text-xs font-medium rounded-full;
-            @apply transition-all duration-300;
-        }
-
-        .team-card:hover .expertise-tag {
-            @apply bg-Shiraz-100 text-Shiraz-700;
         }
 
         /* Researcher Cards Styles */
@@ -484,21 +336,20 @@ import Contact from "../components/common/Contact.astro";
             @apply text-sm text-daisy_bush-600 font-medium mb-1;
         }
 
-        .researcher-focus {
-            @apply text-xs text-cod_gray-600;
-        }
-
         /* Student Cards Styles */
         .student-card {
             @apply text-center transition-all duration-300;
             @apply hover:transform hover:scale-105;
+            @apply bg-white rounded-lg p-4 shadow-sm;
+            @apply border border-cod_gray-200;
+            @apply hover:shadow-md hover:border-Shiraz-300;
         }
 
         .student-image-placeholder {
-            @apply w-16 h-16 rounded-full mx-auto mb-3;
+            @apply w-20 h-20 rounded-full mx-auto mb-3;
             @apply bg-gradient-to-br from-cod_gray-400 to-cod_gray-500;
             @apply flex items-center justify-center;
-            @apply text-white font-medium text-sm;
+            @apply text-white font-medium text-lg;
             @apply shadow-md transition-transform duration-300;
         }
 
@@ -507,12 +358,22 @@ import Contact from "../components/common/Contact.astro";
             @apply bg-gradient-to-br from-Shiraz-400 to-daisy_bush-400;
         }
 
+        .student-info {
+            @apply space-y-1;
+        }
+
         .student-name {
-            @apply font-medium text-cod_gray-900 text-sm mb-1;
+            @apply font-semibold text-cod_gray-900 text-sm leading-tight;
         }
 
         .student-program {
             @apply text-xs text-cod_gray-600;
+            @apply px-2 py-1 bg-cod_gray-100 rounded-full;
+            @apply inline-block;
+        }
+
+        .student-card:hover .student-program {
+            @apply bg-Shiraz-100 text-Shiraz-700;
         }
 
         /* Animations */
@@ -540,6 +401,28 @@ import Contact from "../components/common/Contact.astro";
             
             .researcher-image-placeholder {
                 @apply w-16 h-16 text-base;
+            }
+
+            .student-card {
+                @apply p-3;
+            }
+
+            .student-image-placeholder {
+                @apply w-16 h-16 text-base;
+            }
+
+            .student-name {
+                @apply text-xs;
+            }
+
+            .student-program {
+                @apply text-xs px-1;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .student-card {
+                @apply p-2;
             }
         }
 
