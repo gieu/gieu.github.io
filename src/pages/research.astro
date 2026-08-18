@@ -1,9 +1,33 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { obtenerInvestigaciones } from "../utils/googleSheets.ts";
+import { GET as obtenerPublicacionesScienti } from "./api/publicaciones.json.ts";
 
-// Obtener las investigaciones desde Google Sheets
-const investigaciones = await obtenerInvestigaciones();
+type PublicacionApi = {
+  numero: string;
+  titulo: string;
+  revistaPais: string;
+  anio: string | null;
+  autores: string | null;
+};
+
+const SCIENTI_URL =
+  "https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000008079";
+
+const publicacionesResponse = await obtenerPublicacionesScienti();
+const { publicaciones } = (await publicacionesResponse.json()) as {
+  publicaciones: PublicacionApi[];
+};
+
+const investigaciones = publicaciones.map((publicacion) => ({
+  titulo: publicacion.titulo,
+  categoria: publicacion.revistaPais || "Publicación Scienti",
+  año_inicio: publicacion.anio ?? "Sin año",
+  descripcion: publicacion.autores
+    ? `Autores: ${publicacion.autores}`
+    : "Autores no disponibles",
+  tecnologias: publicacion.revistaPais ? [publicacion.revistaPais] : [],
+  url_detalles: SCIENTI_URL,
+}));
 function obtenerColorTecnologia(tech: string) {
   const techColors: { [key: string]: string } = {
     'Realidad Virtual': 'daisy_bush',
@@ -284,7 +308,7 @@ function obtenerColorTecnologia(tech: string) {
                     <div class="text-center py-12">
                         <div class="text-6xl mb-4">�</div>
                         <h3 class="text-xl font-semibold text-cod_gray-900 mb-2">No hay investigaciones disponibles</h3>
-                        <p class="text-cod_gray-600">Las investigaciones se cargarán automáticamente desde Google Sheets.</p>
+                        <p class="text-cod_gray-600">Las publicaciones se cargarán automáticamente desde Scienti.</p>
                     </div>
                 )}
             </div>
