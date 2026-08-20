@@ -1,32 +1,28 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { GET as obtenerPublicacionesScienti } from "./api/publicaciones.json.ts";
-
-type PublicacionApi = {
-  numero: string;
-  titulo: string;
-  revistaPais: string;
-  anio: string | null;
-  autores: string | null;
-};
-
-const SCIENTI_URL =
-  "https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000008079";
+import {
+  GET as obtenerPublicacionesScienti,
+  SCIENTI_URL,
+} from "./api/publicaciones.json.ts";
+import type { Publicacion as PublicacionApi } from "./api/publicaciones.json.ts";
 
 const publicacionesResponse = await obtenerPublicacionesScienti();
 const { publicaciones } = (await publicacionesResponse.json()) as {
   publicaciones: PublicacionApi[];
 };
 
-const investigaciones = publicaciones.map((publicacion) => ({
-  titulo: publicacion.titulo,
-  categoria: publicacion.revistaPais || "Publicación Scienti",
-  año_inicio: publicacion.anio ?? "Sin año",
-  descripcion: publicacion.autores
-    ? `Autores: ${publicacion.autores}`
-    : "Autores no disponibles",
-  tecnologias: publicacion.revistaPais ? [publicacion.revistaPais] : [],
-  url_detalles: SCIENTI_URL,
+// Mapeamos al modelo que usa la UI de tarjetas.
+const investigaciones = publicaciones.map((pub) => ({
+  titulo: pub.titulo,
+  // La revista funciona como "categoría" visible en la tarjeta.
+  categoria: pub.revista || "Publicación Scienti",
+  año_inicio: pub.anio ?? "Sin año",
+  descripcion: pub.autores ? `Autores: ${pub.autores}` : "Autores no disponibles",
+  // Chips visuales: revista y editorial si existen.
+  tecnologias: [pub.revista, pub.editorial].filter(Boolean) as string[],
+  // URL preferida: Crossref, doi.org o la pÃ¡gina del grupo Scienti si no hay DOI.
+  url_detalles: pub.url ?? SCIENTI_URL,
+  doi: pub.doi,
 }));
 function obtenerColorTecnologia(tech: string) {
   const techColors: { [key: string]: string } = {
@@ -282,7 +278,19 @@ function obtenerColorTecnologia(tech: string) {
                                             );
                                         })}
                                     </div>
-                                    <div class="flex items-center justify-end">
+                                    <div class="flex items-center justify-between flex-wrap gap-2">
+                                        {/* Badge DOI: solo si existe, siempre enlaza a doi.org */}
+                                        {investigacion.doi && (
+                                            <a
+                                                href={`https://doi.org/${investigacion.doi}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="text-xs font-mono text-cod_gray-500 hover:text-daisy_bush-600 transition-colors truncate max-w-[180px]"
+                                                title={`DOI: ${investigacion.doi}`}
+                                            >
+                                                DOI: {investigacion.doi}
+                                            </a>
+                                        )}
                                         {investigacion.url_detalles && (
                                             <a 
                                                 href={investigacion.url_detalles}
