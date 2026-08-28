@@ -87,6 +87,40 @@ El proyecto incluye un endpoint para obtener las publicaciones del grupo desde S
 }
 ```
 
+## Agregar otros tipos de contenido de Scienti
+
+La misma lógica ya está preparada para ampliar más bloques del grupo sin duplicar código. En `src/pages/api/publicaciones.json.ts` existe la función `obtenerSeccionesScienti()`, que usa los encabezados de Scienti para detectar:
+
+- artículos publicados,
+- softwares,
+- capítulos de libro publicados,
+- libros de formación,
+- libros de divulgación y/o compilación.
+
+Si quieres agregar otra categoría, haz lo siguiente:
+
+1. identifica el nombre exacto del encabezado en la página de Scienti,
+2. añade un nuevo patrón de coincidencia en `obtenerSeccionesScienti()`,
+3. guarda el resultado en el catálogo `ScientiCatalogo`,
+4. renderiza esa lista en la vista con el mismo formato que `research.astro`.
+
+Ejemplo de patrón:
+
+```ts
+if (encabezado.includes("mi categoria")) {
+  catalogo.miCategoria = extraerItemsSeccion($, header);
+}
+```
+
+Y luego en la vista:
+
+```astro
+const catalogoScienti = await obtenerSeccionesScienti();
+const miCategoria = catalogoScienti.miCategoria ?? [];
+```
+
+Esto permite añadir nuevos productos, informes, materiales o compilaciones con la misma estructura y lógica de deduplicación que ya usa la página de publicaciones.
+
 ## Desarrollo local
 
 ```bash

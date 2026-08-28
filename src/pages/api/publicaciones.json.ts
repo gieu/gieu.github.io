@@ -28,10 +28,28 @@ export type Publicacion = {
   anio: string | null;
   autores: string | null;
   doi: string | null;
-  url: string | null; // enlace canÃ³nico: URL de Crossref o fallback a doi.org
+  url: string | null; // enlace canónico: URL de Crossref o fallback a doi.org
 };
 
-// ---------- cachÃ© en memoria -----------------------------------------------
+export type ScientiItem = {
+  numero: string;
+  titulo: string;
+  detalle: string | null;
+  anio: string | null;
+  autores: string | null;
+  doi: string | null;
+  url: string | null;
+};
+
+export type ScientiCatalogo = {
+  publicaciones: Publicacion[];
+  software: ScientiItem[];
+  capitulosLibro: ScientiItem[];
+  librosFormacion: ScientiItem[];
+  librosDivulgacion: ScientiItem[];
+};
+
+// ---------- caché en memoria -----------------------------------------------
 // Evita consultar Crossref mÃ¡s de una vez por DOI mientras el proceso estÃ¡ vivo.
 // En producciÃ³n SSR, el proceso Node persiste entre peticiones, por lo que
 // funciona como una cachÃ© "warm" entre usuarios.
@@ -39,7 +57,158 @@ const crossrefCache = new Map<string, Publicacion>();
 
 // ---------- helpers ---------------------------------------------------------
 
-// Normaliza texto para comparar publicaciones y deduplicar por tÃ­tulo + aÃ±o.
+function normalizarTextoSeccion(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extraerNumero(texto: string): string {
+  const match = texto.match(/^\s*(\d+\.)/);
+  return match ? match[1] : "";
+}
+
+function extraerAnio(texto: string): string | null {
+  const years = texto.match(/\b(?:19|20)\d{2}\b/g);
+  return years && years.length > 0 ? years[years.length - 1] : null;
+}
+
+function extraerAutores(texto: string): string | null {
+  const match = texto.match(/Autores:\s*(.*)$/i);
+  return match ? match[1].trim() : null;
+}
+
+function extraerTituloGenerico(texto: string): string {
+  const numero = extraerNumero(texto);
+  const textoSinNumero = numero ? texto.replace(new RegExp(`^\\s*${escapeRegExp(numero)}\\s*-\\s*`, "i"), "") : texto;
+  const textoSinTipo = textoSinNumero.replace(/^[^:]+:\s*/i, "");
+
+  const paises = [
+    "Colombia",
+    "México",
+    "Brasil",
+    "Ecuador",
+    "Argentina",
+    "Perú",
+    "Chile",
+    "Venezuela",
+    "España",
+    "Estados Unidos",
+    "Canadá",
+    "Portugal",
+    "Uruguay",
+    "Paraguay",
+    "Bolivia",
+    "Costa Rica",
+    "Panamá",
+    "Guatemala",
+  ];
+  const patronPaises = paises.join("|");
+
+  const titulo = textoSinTipo
+    .split(new RegExp(`\\s*,\\s*(?:${patronPaises})\\s*,`, "i"))[0]
+    .split(/\s*\b(?:Disponibilidad|Nombre comercial|Sitio web|ISBN|ISSN|Autores|Vol\.|Ed\.|Ed\. editorial|Tipo|Nombre del proyecto)\b/i)[0]
+    .replace(/^[^\p{L}\p{N}]+/u, "")
+    .replace(/[.;,]+$/g, "")
+    .trim();
+
+  return titulo;
+}
+
+function extraerDetalleGenerico(texto: string): string | null {
+  const titulo = extraerTituloGenerico(texto);
+  const numero = extraerNumero(texto);
+  const restante = texto
+    .replace(new RegExp(`^\\s*(?:${escapeRegExp(numero)}\\s*-\\s*)?`, "i"), "")
+    .replace(new RegExp(`^${escapeRegExp(titulo)}`, "i"), "")
+    .replace(/^[^:]*:\s*/i, "")
+    .split(/\s*(?:Autores:|autores:)/i)[0]
+    .replace(/^[\s:,.\-]+|[\s:,.\-]+$/g, "")
+    .trim();
+
+  return restante || null;
+}
+
+function extraerDoiDesdeTexto(texto: string): string | null {
+  const match = texto.match(/(?:https?:\/\/)?(?:dx\.)?doi\.org\/(10\.\d{4,}\/\S+)|(?:^|\s)(10\.\d{4,}\/\S+)/i);
+  return match ? (match[1] ?? match[0].replace(/^.*?(10\.\d{4,}\/\S+)$/i, "$1")).replace(/[.,;)\]>\]]+$/, "") : null;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function extraerItemsSeccion($: cheerio.CheerioAPI, headerTd: Element): ScientiItem[] {
+  const filaEncabezado = $(headerTd).closest("tr");
+  const filasSeccion = filaEncabezado.nextAll("tr");
+  const items: ScientiItem[] = [];
+  const clavesVistas = new Set<string>();
+
+  filasSeccion.each((_rowIndex: number, tr: Element) => {
+    const fila = $(tr);
+    if (fila.find("td.celdaEncabezado").length > 0) {
+      return false;
+    }
+
+    const celdas = fila.children("td");
+    if (celdas.length < 2) {
+      return;
+    }
+
+    const celdaContenido = celdas.eq(1);
+    const clasesPermitidas = ["celdas1", "celdas0", "celdas_1", "celdas_0"];
+    if (!clasesPermitidas.some((clase) => celdaContenido.hasClass(clase))) {
+      return;
+    }
+
+    const textoCompleto = celdaContenido.text().replace(/\s+/g, " ").trim();
+    if (!textoCompleto) {
+      return;
+    }
+
+    const titulo = extraerTituloGenerico(textoCompleto);
+    if (!titulo) {
+      return;
+    }
+
+    const numero = extraerNumero(textoCompleto);
+    const anio = extraerAnio(textoCompleto);
+    const autores = extraerAutores(textoCompleto);
+    const detalle = extraerDetalleGenerico(textoCompleto);
+    let doi: string | null = extraerDoiDesdeTexto(textoCompleto);
+
+    if (!doi) {
+      celdaContenido.find("a[href]").each((_i, anchor) => {
+        if (doi) return;
+        const href = $(anchor).attr("href") ?? "";
+        doi = extraerDoi(href);
+      });
+    }
+
+    const clave = `${normalizarClave(titulo)}|${normalizarClave(anio ?? "")}`;
+    if (clavesVistas.has(clave)) {
+      return;
+    }
+
+    clavesVistas.add(clave);
+    items.push({
+      numero,
+      titulo,
+      detalle,
+      anio,
+      autores,
+      doi,
+      url: doi ? urlDoi(doi) : null,
+    });
+  });
+
+  return items;
+}
+
+// Normaliza texto para comparar publicaciones y deduplicar por título + año.
 function normalizarClave(value: string): string {
   return value
     .toLowerCase()
@@ -179,119 +348,146 @@ async function enriquecerConCrossref(
 
 // ---------- endpoint --------------------------------------------------------
 
-export const prerender = false;
-
-export async function GET() {
-  // 1) Descargamos el HTML de Scienti con la codificaciÃ³n ISO-8859-1.
-  const response = await fetch(SCIENTI_URL);
-  if (!response.ok) {
-    throw new Error(`Error al consultar Scienti: ${response.status}`);
-  }
-
-  const buffer = await response.arrayBuffer();
-  const html = new TextDecoder("iso-8859-1").decode(buffer);
-  const $ = cheerio.load(html);
-
-  // 2) Recorremos todas las celdas de encabezado para localizar la secciÃ³n de publicaciones.
+async function obtenerPublicacionesDeSeccion($: cheerio.CheerioAPI, headerTd: Element): Promise<Publicacion[]> {
+  const filaEncabezado = $(headerTd).closest("tr");
+  const filasSeccion = filaEncabezado.nextAll("tr");
   const publicacionesScienti: PublicacionScienti[] = [];
   const clavesVistas = new Set<string>();
 
-  $("td.celdaEncabezado").each((_index: number, headerTd: Element) => {
-    const encabezado = $(headerTd).text().toLowerCase();
-    if (!encabezado.includes("publicad")) {
+  filasSeccion.each((_rowIndex: number, tr: Element) => {
+    const fila = $(tr);
+    if (fila.find("td.celdaEncabezado").length > 0) {
+      return false;
+    }
+
+    const celdas = fila.children("td");
+    if (celdas.length < 2) {
       return;
     }
 
-    // 3) La tabla de publicaciones estÃ¡ justo despuÃ©s del encabezado de esa secciÃ³n.
-    const filaEncabezado = $(headerTd).closest("tr");
-    const filasSeccion = filaEncabezado.nextAll("tr");
+    const celdaContenido = celdas.eq(1);
+    if (!celdaContenido.hasClass("celdas1") && !celdaContenido.hasClass("celdas0")) {
+      return;
+    }
 
-    filasSeccion.each((_rowIndex: number, tr: Element) => {
-      const fila = $(tr);
+    const textoCompleto = celdaContenido.text().replace(/\s+/g, " ").trim();
+    const numero = extraerNumero(textoCompleto);
+    const titulo = extraerTituloGenerico(textoCompleto);
+    if (!titulo) {
+      return;
+    }
 
-      // Si encontramos otro bloque de encabezado, detenemos la secciÃ³n.
-      if (fila.find("td.celdaEncabezado").length > 0) {
-        return false;
-      }
+    const anio = extraerAnio(textoCompleto);
+    const autores = extraerAutores(textoCompleto);
+    let doi: string | null = extraerDoiDesdeTexto(textoCompleto);
 
-      const celdas = fila.children("td");
-      if (celdas.length < 2) {
-        return;
-      }
-
-      // 4) Cada publicaciÃ³n viene con 2 columnas: icono y contenido Ãºtil.
-      const celdaContenido = celdas.eq(1);
-      if (!celdaContenido.hasClass("celdas1") && !celdaContenido.hasClass("celdas0")) {
-        return;
-      }
-
-      // 5) Los nodos de texto relevantes siguen el formato:
-      // textNodes[0] = nÃºmero, [1] = tÃ­tulo, [2] = revista/paÃ­s.
-      const textNodes = celdaContenido
-        .contents()
-        .toArray()
-        .filter((node) => node.type === "text")
-        .map((node) => ("data" in node && typeof node.data === "string" ? node.data.trim() : ""))
-        .filter(Boolean);
-
-      const numero = textNodes[0] ?? "";
-      const titulo = textNodes[1] ?? "";
-      const revistaPais = textNodes[2] ?? "";
-
-      if (!titulo) {
-        return;
-      }
-
-      // 6) El aÃ±o se toma como el Ãºltimo aÃ±o del texto completo, usando el patrÃ³n 19xx/20xx.
-      const textoCompleto = celdaContenido.text().replace(/\s+/g, " ").trim();
-      const years = textoCompleto.match(/\b(?:19|20)\d{2}\b/g);
-      const anio = years && years.length > 0 ? years[years.length - 1] : null;
-
-      // 7) Los autores siempre aparecen al final con el prefijo "Autores:".
-      const autoresMatch = textoCompleto.match(/Autores:\s*(.*)/i);
-      const autores = autoresMatch ? autoresMatch[1].trim() : null;
-
-      // 8) El DOI se extrae de cualquier enlace <a href> dentro de la celda
-      // cuyo href contenga "doi.org" o empiece con "10." (formato DOI directo).
-      let doi: string | null = null;
+    if (!doi) {
       celdaContenido.find("a[href]").each((_i, anchor) => {
-        if (doi) return; // ya encontramos uno
+        if (doi) return;
         const href = $(anchor).attr("href") ?? "";
-        const candidato = extraerDoi(href);
-        if (candidato) doi = candidato;
+        doi = extraerDoi(href);
       });
-      if (!doi) {
-        doi = extraerDoi(textoCompleto);
-      }
+    }
 
-      // 9) Duplicados: si el mismo tÃ­tulo aparece en el mismo aÃ±o, se ignora.
-      const clave = `${normalizarClave(titulo)}|${normalizarClave(anio ?? "")}`;
-      if (clavesVistas.has(clave)) {
-        return;
-      }
+    const clave = `${normalizarClave(titulo)}|${normalizarClave(anio ?? "")}`;
+    if (clavesVistas.has(clave)) {
+      return;
+    }
 
-      clavesVistas.add(clave);
-      publicacionesScienti.push({ numero, titulo, revistaPais, anio, autores, doi });
+    clavesVistas.add(clave);
+    publicacionesScienti.push({
+      numero,
+      titulo,
+      revistaPais: textoCompleto.split(/\s*,\s*(?:Colombia|México|Brasil|Ecuador|Argentina|Perú|Chile|Venezuela|España|Estados Unidos|Canadá|Portugal|Uruguay|Paraguay|Bolivia|Costa Rica|Panamá|Guatemala)\s*,/i)[0] ?? "",
+      anio,
+      autores,
+      doi,
     });
-
-    return false;
   });
 
-  // 10) Enriquecemos cada publicaciÃ³n con Crossref (en paralelo, acotado a 5
-  //     peticiones simultÃ¡neas para respetar el rate-limit de Crossref).
   const CONCURRENCIA = 5;
   const publicaciones: Publicacion[] = [];
-
   for (let i = 0; i < publicacionesScienti.length; i += CONCURRENCIA) {
     const lote = publicacionesScienti.slice(i, i + CONCURRENCIA);
     const resultados = await Promise.all(lote.map(enriquecerConCrossref));
     publicaciones.push(...resultados);
   }
 
-  const data = { publicaciones };
-  return new Response(JSON.stringify(data), {
-    headers: { "Content-Type": "application/json" },
-  });
+  return publicaciones;
+}
+
+function crearCatalogoVacio(): ScientiCatalogo {
+  return {
+    publicaciones: [],
+    software: [],
+    capitulosLibro: [],
+    librosFormacion: [],
+    librosDivulgacion: [],
+  };
+}
+
+export async function obtenerSeccionesScienti(): Promise<ScientiCatalogo> {
+  try {
+    const response = await fetch(SCIENTI_URL);
+    if (!response.ok) {
+      console.error(`No se pudo consultar Scienti: ${response.status}`);
+      return crearCatalogoVacio();
+    }
+
+    const buffer = await response.arrayBuffer();
+    const html = new TextDecoder("iso-8859-1").decode(buffer);
+    const $ = cheerio.load(html);
+
+    const catalogo: ScientiCatalogo = crearCatalogoVacio();
+
+    const headers = $("td.celdaEncabezado");
+    for (const header of headers.toArray()) {
+      const headerTd = $(header);
+      const encabezado = normalizarTextoSeccion(headerTd.text());
+
+      if (encabezado.includes("publicad") && !encabezado.includes("capitulo") && !encabezado.includes("libros de formacion") && !encabezado.includes("libros de divulgacion") && !encabezado.includes("libros publicados")) {
+        const publicacionesSeccion = await obtenerPublicacionesDeSeccion($, header);
+        catalogo.publicaciones.push(...publicacionesSeccion);
+      }
+
+      if (encabezado.includes("softwar")) {
+        catalogo.software = extraerItemsSeccion($, header);
+      }
+
+      if (encabezado.includes("capitulo") && encabezado.includes("libro")) {
+        catalogo.capitulosLibro = extraerItemsSeccion($, header);
+      }
+
+      if (encabezado.includes("libros de formacion") || encabezado.includes("libros de formación")) {
+        catalogo.librosFormacion = extraerItemsSeccion($, header);
+      }
+
+      if (encabezado.includes("libros de divulgacion") || encabezado.includes("libros de divulgación")) {
+        catalogo.librosDivulgacion = extraerItemsSeccion($, header);
+      }
+    }
+
+    return catalogo;
+  } catch (error) {
+    console.error("Error al consultar Scienti; se usará catálogo vacío.", error);
+    return crearCatalogoVacio();
+  }
+}
+
+export const prerender = false;
+
+export async function GET() {
+  try {
+    const { publicaciones } = await obtenerSeccionesScienti();
+    return new Response(JSON.stringify({ publicaciones }), {
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("Fallo en GET de Scienti; devolviendo respuesta vacía.", error);
+    return new Response(JSON.stringify({ publicaciones: [] }), {
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 }
 
 
