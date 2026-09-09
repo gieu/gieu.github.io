@@ -1,35 +1,175 @@
-# gieu.github.io
+# GIEU - Sitio institucional
 
-## Developments 
-- [Master](https://grupoinformaticaeducativa.uninorte.edu.co/gieu/)
-- [Staing](https://grupoinformaticaeducativa.uninorte.edu.co/web_staging/)
+Portal del Grupo de Investigación en Educación y Uso de Tecnologías (GIEU), construido con Astro.
 
-## 🧞 Commands
+## Descripción
 
-All commands are run from the root of the project, from a terminal:
+Este proyecto sirve como sitio web institucional para:
+- presentar líneas de investigación,
+- mostrar proyectos y publicaciones,
+- consumir datos desde fuentes externas y APIs internas,
+- mantener una estructura ligera y rápida con Astro.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Stack
 
+- Astro
+- TypeScript
+- Tailwind CSS
+- Cheerio para scraping de contenido HTML
 
-To run using docker compose 
+## Estructura principal
 
-1. master 
+```text
+src/
+├── components/
+├── layouts/
+├── pages/
+│   ├── api/
+│   │   └── publicaciones.json.ts
+│   ├── index.astro
+│   ├── projects.astro
+│   └── research.astro
+├── styles/
+├── utils/
+└── assets/
+```
 
-    ```
-    echo "PORT=8517" >> .env
-    docker-compose up --build --force-recreate --no-deps -d
-    ```
+## Scripts disponibles
 
-2. staging 
+Ejecuta estos comandos desde la raíz del proyecto:
 
-    ```
-    echo "PORT=8518" >> .env
-    docker-compose up --build --force-recreate --no-deps -d
-    ```
+```bash
+npm install
+npm run dev
+npm run build
+npm run preview
+npm run astro -- --help
+```
+
+### Descripción de scripts
+
+| Comando | Acción |
+| :--- | :--- |
+| `npm install` | Instala dependencias del proyecto |
+| `npm run dev` | Inicia el servidor de desarrollo |
+| `npm run build` | Genera la versión de producción |
+| `npm run preview` | Previsualiza el build localmente |
+| `npm run astro -- --help` | Muestra ayuda de Astro CLI |
+
+## Endpoint de publicaciones
+
+El proyecto incluye un endpoint para obtener las publicaciones del grupo desde Scienti:
+
+```text
+/api/publicaciones.json
+```
+
+### Qué hace
+
+- consulta la URL pública de Scienti,
+- decodifica el HTML en ISO-8859-1,
+- parsea la sección de publicaciones con Cheerio,
+- extrae título, año, autores y revista/país,
+- deduplica por título + año,
+- devuelve un JSON con la estructura:
+
+```json
+{
+  "publicaciones": [
+    {
+      "numero": "1.",
+      "titulo": "Nombre de la publicación",
+      "revistaPais": "Revista X - Colombia",
+      "anio": "2024",
+      "autores": "Autor 1, Autor 2"
+    }
+  ]
+}
+```
+
+## Agregar otros tipos de contenido de Scienti
+
+La misma lógica ya está preparada para ampliar más bloques del grupo sin duplicar código. En `src/pages/api/publicaciones.json.ts` existe la función `obtenerSeccionesScienti()`, que usa los encabezados de Scienti para detectar:
+
+- artículos publicados,
+- softwares,
+- capítulos de libro publicados,
+- libros de formación,
+- libros de divulgación y/o compilación.
+
+Si quieres agregar otra categoría, haz lo siguiente:
+
+1. identifica el nombre exacto del encabezado en la página de Scienti,
+2. añade un nuevo patrón de coincidencia en `obtenerSeccionesScienti()`,
+3. guarda el resultado en el catálogo `ScientiCatalogo`,
+4. renderiza esa lista en la vista con el mismo formato que `research.astro`.
+
+Ejemplo de patrón:
+
+```ts
+if (encabezado.includes("mi categoria")) {
+  catalogo.miCategoria = extraerItemsSeccion($, header);
+}
+```
+
+Y luego en la vista:
+
+```astro
+const catalogoScienti = await obtenerSeccionesScienti();
+const miCategoria = catalogoScienti.miCategoria ?? [];
+```
+
+Esto permite añadir nuevos productos, informes, materiales o compilaciones con la misma estructura y lógica de deduplicación que ya usa la página de publicaciones.
+
+## Desarrollo local
+
+```bash
+npm run dev
+```
+
+La aplicación queda disponible en el puerto configurado por Astro (por defecto el puerto de desarrollo del proyecto).
+
+## Despliegue con Docker
+
+Se puede ejecutar con Docker Compose.
+
+### Desarrollo / master
+
+```bash
+echo "PORT=8517" > .env
+docker-compose up --build --force-recreate --no-deps -d
+```
+
+### Staging
+
+```bash
+echo "PORT=8518" > .env
+docker-compose up --build --force-recreate --no-deps -d
+```
+
+### Producción
+
+```bash
+docker-compose up --build --force-recreate --no-deps -d
+```
+
+### URLs esperadas
+
+- Master: http://localhost:8517
+- Staging: http://localhost:8518
+- Producción: http://localhost:4321
+
+## Variables de entorno
+
+Puedes crear un `.env` para personalizar el despliegue:
+
+```env
+PORT=4321
+NODE_ENV=production
+```
+
+## Notas
+
+- La lógica de scraping está centralizada en [src/pages/api/publicaciones.json.ts](src/pages/api/publicaciones.json.ts).
+- La vista de investigación consume dicho endpoint para renderizar las publicaciones en la interfaz.
+- El proyecto está listo para seguir ampliando contenido institucional y datos externos.

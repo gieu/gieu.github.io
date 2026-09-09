@@ -19,3 +19,10 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+.md
+.ts
+
+# config files
+nginx.conf
+deploy.sh

@@ -8,7 +8,7 @@ import node from '@astrojs/node';
 export default defineConfig({
   output: 'server',
   site: 'https://grupoinformaticaeducativa.uninorte.edu.co',
-  base: '/gieu',
+  base: '/web',
   server: {
     port: 8517,
     host: true,

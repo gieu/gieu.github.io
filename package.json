@@ -14,8 +14,12 @@
     "@astrojs/node": "^8.2.5",
     "@astrojs/tailwind": "^5.1.0",
     "astro": "^4.5.6",
+    "cheerio": "^1.2.0",
     "sharp": "^0.33.3",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0"
   }
 }
