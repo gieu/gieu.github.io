@@ -1,0 +1,106 @@
+---
+import LeaderCard from './LeaderCard.astro';
+import type { Person } from '../../utils/peopleInfo';
+
+interface Props {
+  leaders: Person[];
+}
+
+const { leaders } = Astro.props;
+---
+
+{leaders.length > 0 && (
+  <section class="relative bg-cod_gray-100 py-10 shadow-2xl shadow-daisy_bush-400" aria-label="Líderes del equipo" data-leaders-carousel>
+    <div class="mx-auto w-full max-w-[1600px] overflow-hidden px-6 lg:px-16">
+      <div class="flex transition-transform duration-700 ease-in-out" data-carousel-track>
+        {leaders.map((leader) => (
+          <div class="w-full min-w-full shrink-0 lg:px-[100px]" data-carousel-slide>
+            <LeaderCard leader={leader} />
+          </div>
+        ))}
+        {leaders.length > 1 && (
+          <div
+            class="w-full min-w-full shrink-0 lg:px-[100px]"
+            data-carousel-slide
+            data-carousel-clone
+            aria-hidden="true"
+          >
+            <LeaderCard leader={leaders[0]} />
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+  
+  document.querySelectorAll<HTMLElement>('[data-leaders-carousel]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-carousel-track]');
+    const slides = root.querySelectorAll<HTMLElement>('[data-carousel-slide]');
+    const hasClone = root.querySelector('[data-carousel-clone]') !== null;
+    
+    const realSlideCount = hasClone ? slides.length - 1 : slides.length;
+
+    if (!track || realSlideCount <= 1) return;
+
+    let currentIndex = 0;
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+
+    const goToSlide = (index: number, instant = false) => {
+      if (instant) {
+        
+        track.style.transitionDuration = '0ms';
+      }
+      currentIndex = index;
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+      if (instant) {
+       
+        void track.offsetHeight;
+        track.style.transitionDuration = '';
+      }
+    };
+
+    const showNextSlide = () => {
+      
+      goToSlide(currentIndex + 1);
+    };
+
+    
+    track.addEventListener('transitionend', () => {
+      if (currentIndex === realSlideCount) {
+        goToSlide(0, true);
+      }
+    });
+
+    const startAutoplay = () => {
+      
+      if (intervalId) return;
+      intervalId = setInterval(showNextSlide, 5000);
+    };
+
+    const stopAutoplay = () => {
+      clearInterval(intervalId);
+      intervalId = undefined;
+    };
+
+    startAutoplay();
+
+    
+    root.addEventListener('mouseenter', stopAutoplay);
+    root.addEventListener('mouseleave', startAutoplay);
+
+    
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopAutoplay();
+        return;
+      }
+
+      if (currentIndex >= realSlideCount) {
+        goToSlide(0, true);
+      }
+      startAutoplay();
+    });
+  });
+</script>
