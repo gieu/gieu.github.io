@@ -9,15 +9,32 @@ interface Props {
 const { leaders } = Astro.props;
 ---
 
+<!-- Render the carousel only when leaders are available -->
 {leaders.length > 0 && (
-  <section class="relative bg-cod_gray-100 py-10 shadow-2xl shadow-daisy_bush-400" aria-label="Líderes del equipo" data-leaders-carousel>
+  <section
+    class="relative bg-cod_gray-100 py-10 shadow-2xl shadow-daisy_bush-400"
+    aria-label="Líderes del equipo"
+    data-leaders-carousel
+  >
+    <!-- Limit the carousel width and hide overflowing slides -->
     <div class="mx-auto w-full max-w-[1600px] overflow-hidden px-6 lg:px-16">
-      <div class="flex transition-transform duration-700 ease-in-out" data-carousel-track>
+
+      <!-- Movable track containing all slides -->
+      <div
+        class="flex transition-transform duration-700 ease-in-out"
+        data-carousel-track
+      >
+        <!-- Generate one slide for each leader -->
         {leaders.map((leader) => (
-          <div class="w-full min-w-full shrink-0 lg:px-[100px]" data-carousel-slide>
+          <div
+            class="w-full min-w-full shrink-0 lg:px-[100px]"
+            data-carousel-slide
+          >
             <LeaderCard leader={leader} />
           </div>
         ))}
+
+        <!-- Clone the first slide to create a continuous loop -->
         {leaders.length > 1 && (
           <div
             class="w-full min-w-full shrink-0 lg:px-[100px]"
@@ -34,73 +51,82 @@ const { leaders } = Astro.props;
 )}
 
 <script>
-  
-  document.querySelectorAll<HTMLElement>('[data-leaders-carousel]').forEach((root) => {
-    const track = root.querySelector<HTMLElement>('[data-carousel-track]');
-    const slides = root.querySelectorAll<HTMLElement>('[data-carousel-slide]');
-    const hasClone = root.querySelector('[data-carousel-clone]') !== null;
-    
-    const realSlideCount = hasClone ? slides.length - 1 : slides.length;
+  document
+    .querySelectorAll<HTMLElement>('[data-leaders-carousel]')
+    .forEach((root) => {
+      const track = root.querySelector<HTMLElement>('[data-carousel-track]');
+      const slides = root.querySelectorAll<HTMLElement>('[data-carousel-slide]');
 
-    if (!track || realSlideCount <= 1) return;
+      // Check whether the first slide was cloned
+      const hasClone = root.querySelector('[data-carousel-clone]') !== null;
 
-    let currentIndex = 0;
-    let intervalId: ReturnType<typeof setInterval> | undefined;
+      // Exclude the cloned slide from the real slide count
+      const realSlideCount = hasClone ? slides.length - 1 : slides.length;
 
-    const goToSlide = (index: number, instant = false) => {
-      if (instant) {
-        
-        track.style.transitionDuration = '0ms';
-      }
-      currentIndex = index;
-      track.style.transform = `translateX(-${currentIndex * 100}%)`;
-      if (instant) {
-       
-        void track.offsetHeight;
-        track.style.transitionDuration = '';
-      }
-    };
+      // Do not start the carousel when there are no slides to rotate
+      if (!track || realSlideCount <= 1) return;
 
-    const showNextSlide = () => {
-      
-      goToSlide(currentIndex + 1);
-    };
+      // Store the active slide and autoplay timer
+      let currentIndex = 0;
+      let intervalId: ReturnType<typeof setInterval> | undefined;
 
-    
-    track.addEventListener('transitionend', () => {
-      if (currentIndex === realSlideCount) {
-        goToSlide(0, true);
-      }
-    });
+      // Move the track to a specific slide
+      const goToSlide = (index: number, instant = false) => {
+        // Disable animation when resetting to the first slide
+        if (instant) {
+          track.style.transitionDuration = '0ms';
+        }
 
-    const startAutoplay = () => {
-      
-      if (intervalId) return;
-      intervalId = setInterval(showNextSlide, 5000);
-    };
+        currentIndex = index;
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
 
-    const stopAutoplay = () => {
-      clearInterval(intervalId);
-      intervalId = undefined;
-    };
+        // Restore the transition after the instant reset
+        if (instant) {
+          void track.offsetHeight;
+          track.style.transitionDuration = '';
+        }
+      };
 
-    startAutoplay();
+      // Advance to the next slide
+      const showNextSlide = () => {
+        goToSlide(currentIndex + 1);
+      };
 
-    
-    root.addEventListener('mouseenter', stopAutoplay);
-    root.addEventListener('mouseleave', startAutoplay);
+      // Reset to the first slide after reaching the clone
+      track.addEventListener('transitionend', () => {
+        if (currentIndex === realSlideCount) {
+          goToSlide(0, true);
+        }
+      });
 
-    
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        stopAutoplay();
-        return;
-      }
+      // Start automatic rotation every five seconds
+      const startAutoplay = () => {
+        if (intervalId) return;
+        intervalId = setInterval(showNextSlide, 5000);
+      };
 
-      if (currentIndex >= realSlideCount) {
-        goToSlide(0, true);
-      }
+      const stopAutoplay = () => {
+        clearInterval(intervalId);
+        intervalId = undefined;
+      };
+
       startAutoplay();
+
+      root.addEventListener('mouseenter', stopAutoplay);
+      root.addEventListener('mouseleave', startAutoplay);
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          stopAutoplay();
+          return;
+        }
+
+        // Prevent the carousel from remaining on the cloned slide
+        if (currentIndex >= realSlideCount) {
+          goToSlide(0, true);
+        }
+
+        startAutoplay();
+      });
     });
-  });
 </script>

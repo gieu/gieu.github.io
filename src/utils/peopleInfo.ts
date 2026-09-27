@@ -27,40 +27,42 @@ export interface Person {
 	photo?: string;
 }
 
+//Leaders information
 export const leaders: Person[] = [
 	{
 		name: "Camilo Vieira",
 		role: "Director de MyE",
-		description: `Camilo Vieira es ingeniero de sistemas y cuenta con un doctorado en Computational Science and Engineering Education. Su trayectoria combina la investigación, la visualización de datos y la innovación educativa para mejorar los procesos de aprendizaje. Como líder, Camilo se distingue por su amor a la enseñanza y por su cercanía con estudiantes y colegas. Es una persona amable, colaboradora y de gran corazón.`,
+		description: `Camilo vieira es ingeniero de sistemas y cuenta con un doctorado en Computational Science and Engineering Education. Su trayectoria combina la investigación, la visualización de datos y la innovación educativa para mejorar los procesos de aprendizaje. Como líder, Camilo se distingue por su amor a la enseñanza y por su cercanía con estudiantes y colegas. Es una persona amable, colaboradora y de gran corazón.`,
 		photo: camiloVieira.src	
 	},
 	{
 		name: "Mariana Arboleda",
 		role: "Líder de datos",
-		description: `Mariana Arboleda es ingeniera de producción, magíster en Ingeniería y doctoranda en Educación. Su trayectoria combina el análisis de datos, la investigación educativa y la enseñanza, con especial interés en cómo las personas aprenden y enseñan ciencia de datos. Como líder, Mariana es atenta y amigable. Está siempre pendiente de sus actividades y guía a su equipo con compromiso, cercanía y una cálida sonrisa.`,
+		description: `Mariana Arboleda es ingeniera de producción, magíster en ingeniería y doctoranda en educación. Su trayectoria combina el análisis de datos, la investigación educativa y la enseñanza, con especial interés en cómo las personas aprenden y enseñan ciencia de datos. Como líder, Mariana es atenta y amigable. Está siempre pendiente de sus actividades y guía a su equipo con compromiso, cercanía y una cálida sonrisa`,
 		photo: marianaArboleda.src,
 	},
 	{
 		name: "Gabriela de la Rosa",
 		role: "Líder de evaluación C3",
-		description: ``,
+		description: `Gabriela de la Rosa es politóloga y magíster en Educación. Actualmente se desempeña como Lead Evaluation Analyst, donde trabaja en el monitoreo y evaluación de proyectos educativos. Su experiencia en investigación, análisis de datos, políticas públicas y cooperación internacional fortalece la evaluación rigurosa y el impacto de las iniciativas del equipo`,
 		photo: gabrielaDeLaRosa.src
 	},
 	{
 		name: "Angie padilla",
 		role: "Líder de evaluación C2",
-		description: ``,
+		description: `Angie Padilla se desempeña como Analista Líder de Evaluación en proyectos educativos como Colombia Programa y Coding Hubs Manizales. Su experiencia combina la docencia universitaria, la investigación y el análisis de datos cuantitativos y cualitativos, aportando al seguimiento riguroso y al fortalecimiento de las iniciativas del equipo`,
 		photo: angiePadilla.src
 	},
 	{
 		name: "Roxana Quintero",
 		role: "Gerente de Proyecto 2024-2025",
-		description: ``,
+		description: `Psicóloga, especialista en estadística aplicada y magíster en educación con énfasis en Cognición. Su trayectoria en investigación educativa aborda el aprendizaje de la programación, la carga cognitiva y las experiencias de estudiantes en entornos remotos. Como líder de proyectos, Roxana combinó una mirada sensible sobre las personas con el análisis riguroso de la información. Su trabajo contribuyó a comprender mejor cómo aprenden los estudiantes y a fortalecer las prácticas educativas`,
 		photo: roxanaQuintana.src
 	}
 
 ];
 
+//Members information
 export const members: Person[] = [ 
 	{ 
 		name: "Carolina Fontalvo", 
