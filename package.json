@@ -6,6 +6,7 @@
     "dev": "astro sync && astro dev --host",
     "start": "astro sync && astro dev",
     "build": "astro sync && astro check && astro build",
+    "optimize:team-images": "node scripts/optimize-team-images.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
