@@ -58,6 +58,7 @@ import Contact from "../components/common/Contact.astro";
         <section
             class="bg-cod_gray-50 px-10 py-20 gap-10 flex flex-col lg:flex-row w-full max-w-[1140px] mx-auto"
             aria-label="Información sobre el grupo"
+            data-reveal
         >
             <div class="flex flex-col justify-center lg:w-1/2">
                 <h2 class="text-3xl font-semibold mb-6 text-cod_gray-900">¿Quiénes somos?</h2>
@@ -90,10 +91,10 @@ import Contact from "../components/common/Contact.astro";
         <!-- Features Section -->
         <section class="bg-cod_gray-100 py-20" aria-label="Nuestros enfoques">
             <div class="max-w-[1140px] mx-auto px-10">
-                <h2 class="text-3xl font-semibold text-center mb-12 text-cod_gray-900">
+                <h2 class="text-3xl font-semibold text-center mb-12 text-cod_gray-900" data-reveal>
                     Nuestros Enfoques de Investigación
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-reveal>
                     <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                         <div class="text-Shiraz-700 text-4xl mb-4">🔬</div>
                         <h3 class="text-xl font-semibold mb-3 text-cod_gray-900">Investigación STEM</h3>
@@ -361,6 +362,24 @@ import Contact from "../components/common/Contact.astro";
             animation: fade-in 1s ease-out;
         }
 
+        [data-reveal].reveal-ready {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.45s ease-out, transform 0.45s ease-out;
+        }
+
+        [data-reveal].reveal-ready.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            [data-reveal].reveal-ready {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
         /* Smooth scrolling for anchor links */
         html {
             scroll-behavior: smooth;
@@ -406,4 +425,21 @@ import Contact from "../components/common/Contact.astro";
             }
         }
     </style>
+    <script>
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+            const revealTargets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                });
+            }, { threshold: 0.1 });
+
+            revealTargets.forEach((target) => {
+                target.classList.add('reveal-ready');
+                revealObserver.observe(target);
+            });
+        }
+    </script>
 </BaseLayout>

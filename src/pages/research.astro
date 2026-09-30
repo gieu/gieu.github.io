@@ -170,17 +170,13 @@ const productosScienti = configuracionProductos.map((configuracion) => {
             }
         }
         
-        .research-card {
-            animation: fadeInUp 0.6s ease-out forwards;
-            opacity: 0;
+        .results-grid.results-enter {
+            animation: resultsEnter 0.28s ease-out both;
         }
-        
-        .research-card:nth-child(odd) {
-            animation-delay: 0.1s;
-        }
-        
-        .research-card:nth-child(even) {
-            animation-delay: 0.3s;
+
+        @keyframes resultsEnter {
+            from { opacity: 0.5; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .area-card {
@@ -246,7 +242,7 @@ const productosScienti = configuracionProductos.map((configuracion) => {
                 transition-duration: 0.01ms !important;
             }
 
-            .research-card, .area-card, .hero-title, .hero-subtitle,
+            .area-card, .hero-title, .hero-subtitle,
             .floating-bg, .floating-bg-reverse, .floating-element,
             .animate-fade-in-up {
                 animation: none !important;
@@ -359,7 +355,7 @@ const productosScienti = configuracionProductos.map((configuracion) => {
                 </p>
                 
                 <!-- Research Projects Container -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="results-grid grid grid-cols-1 md:grid-cols-2 gap-8" data-results-grid>
                     {investigaciones.map((investigacion) => (
                         <div class="research-card research-hover bg-white/90 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-white/30 hover:border-daisy_bush-200 group">
                             <div class="flex items-start space-x-4">
@@ -430,7 +426,7 @@ const productosScienti = configuracionProductos.map((configuracion) => {
                         Mostrando {seccion.inicio + 1}–{Math.min(seccion.inicio + publicacionesPorPagina, seccion.total)} de {seccion.total} {seccion.total === 1 ? "producto" : "productos"}
                     </p>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="results-grid grid grid-cols-1 md:grid-cols-2 gap-8" data-results-grid>
                         {seccion.items.map((item) => (
                             <div class="research-card research-hover bg-white/90 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-white/30 hover:border-daisy_bush-200 group">
                                 <div class="flex items-start space-x-4">
@@ -511,4 +507,12 @@ const productosScienti = configuracionProductos.map((configuracion) => {
             </div>
         </section>
     </main>
+
+    <script>
+        window.addEventListener('pageshow', () => {
+            if (!window.location.hash || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const section = document.getElementById(window.location.hash.slice(1));
+            section?.querySelector('[data-results-grid]')?.classList.add('results-enter');
+        });
+    </script>
 </BaseLayout>
