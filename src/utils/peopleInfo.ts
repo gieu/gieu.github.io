@@ -32,7 +32,7 @@ export const leaders: Person[] = [
 	{
 		name: "Camilo Vieira",
 		role: "Director de MyE",
-		description: `Camilo vieira es ingeniero de sistemas y cuenta con un doctorado en Computational Science and Engineering Education. Su trayectoria combina la investigación, la visualización de datos y la innovación educativa para mejorar los procesos de aprendizaje. Como líder, Camilo se distingue por su amor a la enseñanza y por su cercanía con estudiantes y colegas. Es una persona amable, colaboradora y de gran corazón.`,
+		description: `Camilo Vieira es ingeniero de sistemas y cuenta con un doctorado en Computational Science and Engineering Education. Su trayectoria combina la investigación, la visualización de datos y la innovación educativa para mejorar los procesos de aprendizaje. Como líder, Camilo se distingue por su amor a la enseñanza y por su cercanía con estudiantes y colegas. Es una persona amable, colaboradora y de gran corazón.`,
 		photo: camiloVieira.src	
 	},
 	{
@@ -48,7 +48,7 @@ export const leaders: Person[] = [
 		photo: gabrielaDeLaRosa.src
 	},
 	{
-		name: "Angie padilla",
+		name: "Angie Padilla",
 		role: "Líder de evaluación C2",
 		description: `Angie Padilla se desempeña como Analista Líder de Evaluación en proyectos educativos como Colombia Programa y Coding Hubs Manizales. Su experiencia combina la docencia universitaria, la investigación y el análisis de datos cuantitativos y cualitativos, aportando al seguimiento riguroso y al fortalecimiento de las iniciativas del equipo`,
 		photo: angiePadilla.src
