@@ -11,34 +11,31 @@ import Contact from "../components/common/Contact.astro";
         <!-- Hero Section -->
         <section
             id="hero-banner"
-            class="bg-hero-image w-full min-h-screen grid p-10 sm:px-20"
+            class="bg-hero-image w-full grid p-6 sm:p-10 lg:px-20"
             aria-label="Sección principal"
         >
             <div
-                class="flex flex-col gap-10 justify-center items-start text-cod_gray-50 max-w-[570px] animate-fade-in"
+                class="flex flex-col gap-5 sm:gap-8 lg:gap-10 justify-center items-start text-cod_gray-50 max-w-[570px] animate-fade-in"
             >
-                <h1 class="text-4xl md:text-5xl font-bold leading-tight text-left">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-left">
                     <span>Grupo de investigación en</span>
-                    <span class="text-Shiraz-700 block mt-2">Informática Educativa</span>
+                    <span class="text-Shiraz-300 block mt-2">Informática Educativa</span>
                 </h1>
                 <div class="text-left">
-                    <p class="text-xl md:text-2xl mb-5 tracking-wide">
+                    <p class="text-lg sm:text-xl md:text-2xl mb-4 tracking-wide">
                         Fomentamos el desarrollo de habilidades STEM
-                        <span class="text-daisy_bush-700 font-bold block sm:inline"
+                        <span class="text-daisy_bush-300 font-bold block sm:inline"
                             >para todas y todos.</span
                         >
                     </p>
                     <p class="text-base md:text-lg leading-relaxed">
-                        Todas y todos los estudiantes, merecen construir un
-                        futuro sólido en un mundo complejo. Estamos dedicados a
-                        promover la investigación STEM a través de la tecnología
-                        para incentivar su uso y cambiar la forma en la que se
-                        incluye en las aulas.
+                        Investigamos y desarrollamos soluciones educativas que
+                        llevan la tecnología y las habilidades STEM a las aulas.
                     </p>
                 </div>
                 
                 <!-- Call to Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 mt-6 self-start">
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 self-start">
                     <a 
                         href="/web/research"
                         class="bg-Shiraz-700 hover:bg-Shiraz-800 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 text-center transform hover:scale-105"
@@ -217,6 +214,8 @@ import Contact from "../components/common/Contact.astro";
 
     <style>
         .bg-hero-image {
+            min-height: calc(100vh - 80px);
+            min-height: calc(100svh - 80px);
             background: linear-gradient(
                     0deg,
                     rgba(18, 18, 18, 0.4) 0%,
@@ -229,6 +228,17 @@ import Contact from "../components/common/Contact.astro";
                 ),
                 url('/web/hero-image.webp');
             @apply bg-center bg-no-repeat bg-cover;
+        }
+
+        @media (max-width: 640px) {
+            .bg-hero-image {
+                min-height: calc(100vh - 76px);
+                min-height: calc(100svh - 76px);
+                background-image:
+                    linear-gradient(90deg, rgba(18, 18, 18, 0.88), rgba(18, 18, 18, 0.58)),
+                    url('/web/hero-image.webp');
+                background-position: 38% center;
+            }
         }
 
         /* Stats Section Styles */
