@@ -298,6 +298,7 @@ const tecnologiasUnicas = [...new Set(proyectos.flatMap(proyecto => proyecto.tec
             }
 
             let totalItems = projectItems.length;
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
             // Intersection Observer for scroll animations
             const observerOptions = {
@@ -329,7 +330,7 @@ const tecnologiasUnicas = [...new Set(proyectos.flatMap(proyecto => proyecto.tec
 
                 let visibleCount = 0;
 
-                projectItems.forEach((item, index) => {
+                projectItems.forEach((item) => {
                     const title = (item.dataset.title || '').toLowerCase();
                     const description = (item.dataset.description || '').toLowerCase();
                     const status = item.dataset.status || '';
@@ -347,71 +348,46 @@ const tecnologiasUnicas = [...new Set(proyectos.flatMap(proyecto => proyecto.tec
                     const matchesYear = !yearValue || year === yearValue;
                     const matchesTechnology = !technologyValue || technologies.includes(technologyValue.toLowerCase());
 
-                    // Show/hide item based on all criteria with staggered animation
+                    // Apply the latest filter immediately so earlier input cannot leave stale cards visible.
                     if (matchesSearch && matchesStatus && matchesYear && matchesTechnology) {
-                        setTimeout(() => {
-                            item.style.display = 'block';
-                            item.classList.add('animate-slide-in-from-left');
-                            item.classList.remove('animate-slide-out-to-right');
-                        }, index * 50);
+                        const wasHidden = item.style.display === 'none';
+                        item.style.display = '';
+                        if (wasHidden && !reduceMotion) item.classList.add('project-filter-enter');
                         visibleCount++;
                     } else {
-                        item.classList.add('animate-slide-out-to-right');
-                        item.classList.remove('animate-slide-in-from-left');
-                        setTimeout(() => {
-                            if (item.classList.contains('animate-slide-out-to-right')) {
-                                item.style.display = 'none';
-                            }
-                        }, 300);
+                        item.style.display = 'none';
+                        item.classList.remove('project-filter-enter');
                     }
                 });
 
-                // Update results counter with animation
-                setTimeout(() => {
-                    resultsCounter.textContent = `Mostrando ${visibleCount} de ${totalItems} proyectos`;
-                    resultsCounter.classList.add('animate-pulse-once');
-                    setTimeout(() => resultsCounter.classList.remove('animate-pulse-once'), 600);
-                }, 100);
-
-                // Show/hide no results message with animation
-                setTimeout(() => {
-                    if (visibleCount === 0) {
-                        noResults.classList.remove('hidden');
-                        noResults.classList.add('animate-fade-in');
-                        projectsContainer.classList.add('animate-fade-out');
-                    } else {
-                        noResults.classList.add('hidden');
-                        noResults.classList.remove('animate-fade-in');
-                        projectsContainer.classList.remove('animate-fade-out');
-                    }
-                }, 400);
+                resultsCounter.textContent = `Mostrando ${visibleCount} de ${totalItems} proyectos`;
+                noResults.classList.toggle('hidden', visibleCount !== 0);
             }
 
-            // Clear all filters with animation
+            projectItems.forEach((item) => {
+                item.addEventListener('animationend', (event) => {
+                    if (event.target === item && event.animationName === 'filterResultIn') {
+                        item.classList.remove('project-filter-enter');
+                    }
+                });
+            });
+
+            // Clear all filters and update the results in the same interaction.
             function clearAllFilters() {
                 if (!searchInput || !statusFilter || !yearFilter || !technologyFilter) {
                     return;
                 }
-                
-                // Add shake animation to indicate clearing
-                const filters = [searchInput, statusFilter, yearFilter, technologyFilter];
-                filters.forEach(filter => {
-                    filter.classList.add('animate-shake');
-                    setTimeout(() => filter.classList.remove('animate-shake'), 500);
-                });
                 
                 searchInput.value = '';
                 statusFilter.value = '';
                 yearFilter.value = '';
                 technologyFilter.value = '';
                 
-                setTimeout(() => filterProjects(), 200);
+                filterProjects();
             }
 
             // Add event listeners
             searchInput.addEventListener('input', () => {
-                searchInput.classList.add('animate-glow');
-                setTimeout(() => searchInput.classList.remove('animate-glow'), 300);
                 filterProjects();
             });
             
@@ -427,16 +403,6 @@ const tecnologiasUnicas = [...new Set(proyectos.flatMap(proyecto => proyecto.tec
             // Add enhanced animation styles
             const style = document.createElement('style');
             style.textContent = `
-                /* Floating background elements */
-                .floating-element {
-                    animation: float 6s ease-in-out infinite;
-                }
-                
-                @keyframes float {
-                    0%, 100% { transform: translateY(0px); }
-                    50% { transform: translateY(0px); }
-                }
-                
                 /* Main animations */
                 .animate-fade-in-up {
                     animation: fadeInUp 0.8s ease-out forwards;
@@ -456,16 +422,6 @@ const tecnologiasUnicas = [...new Set(proyectos.flatMap(proyecto => proyecto.tec
                     transform: translateY(50px);
                 }
                 
-                .animate-slide-in-from-left {
-                    animation: slideInFromLeft 0.5s ease-out forwards;
-                    opacity: 0;
-                    transform: translateX(-30px);
-                }
-                
-                .animate-slide-out-to-right {
-                    animation: slideOutToRight 0.3s ease-in forwards;
-                }
-                
                 .animate-fade-in-scale {
                     animation: fadeInScale 0.4s ease-out forwards;
                     opacity: 0;
@@ -476,20 +432,12 @@ const tecnologiasUnicas = [...new Set(proyectos.flatMap(proyecto => proyecto.tec
                     animation: pulseSubtle 3s ease-in-out infinite;
                 }
                 
-                .animate-pulse-once {
-                    animation: pulseOnce 0.6s ease-in-out;
-                }
-                
-                .animate-glow {
-                    animation: glow 0.3s ease-in-out;
-                }
-                
-                .animate-shake {
-                    animation: shake 0.5s ease-in-out;
-                }
-                
                 .animate-in-view {
                     animation: scaleInView 0.6s ease-out forwards;
+                }
+
+                .project-filter-enter {
+                    animation: filterResultIn 0.22s ease-out both;
                 }
                 
                 /* Filter items staggered animation */
@@ -526,20 +474,11 @@ const tecnologiasUnicas = [...new Set(proyectos.flatMap(proyecto => proyecto.tec
                     }
                 }
                 
-                @keyframes slideInFromLeft {
-                    to {
-                        opacity: 1;
-                        transform: translateX(0);
-                    }
+                @keyframes filterResultIn {
+                    from { opacity: 0.4; transform: translateY(6px); }
+                    to { opacity: 1; transform: translateY(0); }
                 }
-                
-                @keyframes slideOutToRight {
-                    to {
-                        opacity: 0;
-                        transform: translateX(100px);
-                    }
-                }
-                
+
                 @keyframes fadeInScale {
                     to {
                         opacity: 1;
@@ -550,22 +489,6 @@ const tecnologiasUnicas = [...new Set(proyectos.flatMap(proyecto => proyecto.tec
                 @keyframes pulseSubtle {
                     0%, 100% { opacity: 1; }
                     50% { opacity: 0.8; }
-                }
-                
-                @keyframes pulseOnce {
-                    0%, 100% { transform: scale(1); }
-                    50% { transform: scale(1.05); }
-                }
-                
-                @keyframes glow {
-                    0%, 100% { box-shadow: 0 0 5px rgba(185, 28, 28, 0.3); }
-                    50% { box-shadow: 0 0 20px rgba(185, 28, 28, 0.6); }
-                }
-                
-                @keyframes shake {
-                    0%, 100% { transform: translateX(0); }
-                    25% { transform: translateX(-5px); }
-                    75% { transform: translateX(5px); }
                 }
                 
                 @keyframes scaleInView {

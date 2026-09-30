@@ -216,16 +216,6 @@ import HeaderLink from "./HeaderLink.astro";
             }
         }
 
-        /* Floating animation for header */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-2px); }
-        }
-
-        #main-header:hover {
-            animation: float 2s ease-in-out infinite;
-        }
-
         /* Responsive mejoras */
         @media (max-width: 640px) {
             #main-header {
@@ -275,18 +265,6 @@ import HeaderLink from "./HeaderLink.astro";
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
-        /* Glitch effect on hover (sutil) */
-        .brand-link:hover img {
-            animation: glitch 0.3s ease-in-out;
-        }
-
-        @keyframes glitch {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-1px, 1px); }
-            40% { transform: translate(1px, -1px); }
-            60% { transform: translate(-1px, -1px); }
-            80% { transform: translate(1px, 1px); }
-        }
     </style>
 
     <script>

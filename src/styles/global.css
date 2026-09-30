@@ -8,6 +8,19 @@ body {
     @apply bg-cod_gray-50 font-['Lato'];
 }
 
+@media (prefers-reduced-motion: reduce) {
+    *:not([data-carousel-track]),
+    *:not([data-carousel-track])::before,
+    *:not([data-carousel-track])::after {
+        animation-delay: 0ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-delay: 0ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
 /* Slut (markdown content) style */
 
 #content {
