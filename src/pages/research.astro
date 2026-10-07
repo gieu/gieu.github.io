@@ -42,7 +42,11 @@ const enlacePagina = (parametro: string, pagina: number, seccion: string) => {
   if (pagina === 1) parametros.delete(parametro);
   else parametros.set(parametro, String(pagina));
   const consulta = parametros.toString();
-  return `${Astro.url.pathname}${consulta ? `?${consulta}` : ""}#${seccion}`;
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+  const pathname = Astro.url.pathname.startsWith(`${basePath}/`) || Astro.url.pathname === basePath
+    ? Astro.url.pathname
+    : `${basePath}${Astro.url.pathname.startsWith("/") ? "" : "/"}${Astro.url.pathname}`;
+  return `${pathname}${consulta ? `?${consulta}` : ""}#${seccion}`;
 };
 
 // Mapeamos al modelo que usa la UI de tarjetas.
