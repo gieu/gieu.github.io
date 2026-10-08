@@ -44,19 +44,19 @@ export const leaders: Person[] = [
 	{
 		name: "Gabriela de la Rosa",
 		role: "Líder de evaluación C3",
-		description: `Gabriela de la Rosa es politóloga y magíster en Educación. Actualmente se desempeña como Lead Evaluation Analyst, donde trabaja en el monitoreo y evaluación de proyectos educativos. Su experiencia en investigación, análisis de datos, políticas públicas y cooperación internacional fortalece la evaluación rigurosa y el impacto de las iniciativas del equipo`,
+		description: `Gabriela de la Rosa es politóloga y magíster en Educación. Actualmente se desempeña como Lead Evaluation Analyst, donde trabaja en el monitoreo y la evaluación de proyectos educativos. Su experiencia en investigación, análisis de datos, políticas públicas y cooperación internacional fortalece la evaluación rigurosa y el impacto de las iniciativas del equipo. Como líder, Gabriela se distingue por su amabilidad y por su disposición constante para aprender y compartir sus conocimientos con los demás.`,
 		photo: gabrielaDeLaRosa.src
 	},
 	{
 		name: "Angie padilla",
 		role: "Líder de evaluación C2",
-		description: `Angie Padilla se desempeña como Analista Líder de Evaluación en proyectos educativos como Colombia Programa y Coding Hubs Manizales. Su experiencia combina la docencia universitaria, la investigación y el análisis de datos cuantitativos y cualitativos, aportando al seguimiento riguroso y al fortalecimiento de las iniciativas del equipo`,
+		description: `Angie Padilla se desempeña como Analista Líder de Evaluación en proyectos educativos como Colombia Programa y Coding Hubs Manizales. Su experiencia combina la docencia universitaria, la investigación y el análisis de datos cuantitativos y cualitativos, aportando al seguimiento riguroso y al fortalecimiento de las iniciativas del equipo. Como líder, Angie se distingue por su creatividad, sensibilidad y capacidad innata para inspirar y guiar a los demás.`,
 		photo: angiePadilla.src
 	},
 	{
 		name: "Roxana Quintero",
 		role: "Gerente de Proyecto 2024-2025",
-		description: `Psicóloga, especialista en estadística aplicada y magíster en educación con énfasis en Cognición. Su trayectoria en investigación educativa aborda el aprendizaje de la programación, la carga cognitiva y las experiencias de estudiantes en entornos remotos. Como líder de proyectos, Roxana combinó una mirada sensible sobre las personas con el análisis riguroso de la información. Su trabajo contribuyó a comprender mejor cómo aprenden los estudiantes y a fortalecer las prácticas educativas`,
+		description: `Roxana es psicóloga, especialista en estadística aplicada y magíster en Educación, con énfasis en Cognición. Su experiencia en investigación educativa se centra en el aprendizaje de la programación, la carga cognitiva y las experiencias de estudiantes en entornos remotos. Como líder de proyectos, combina el análisis riguroso con una gran disciplina y constancia, tanto en el trabajo como en el deporte.`,
 		photo: roxanaQuintana.src
 	}
 
