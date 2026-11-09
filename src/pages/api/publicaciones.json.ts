@@ -67,18 +67,6 @@ let siguienteIntento = 0;
 let cargaCatalogoEnCurso: Promise<ScientiCatalogo> | null = null;
 
 // Caché en memoria para el catálogo completo de Scienti (artículos, libros, software).
-// Evita volver a scrapear MinCiencias y consultar Crossref en cada visita.
-let catalogoCache: {
-  timestamp: number;
-  datos: ScientiCatalogo;
-} | null = null;
-
-// TTL (Tiempo de vida de la caché): 24 horas en milisegundos
-const TTL_CATALOGO_MS = 24 * 60 * 60 * 1000;
-
-// Deduplicador de peticiones en vuelo (evita consultas simultáneas idénticas)
-let promesaEnVuelo: Promise<ScientiCatalogo> | null = null;
-
 // ---------- helpers ---------------------------------------------------------
 
 function normalizarTextoSeccion(value: string): string {
@@ -320,7 +308,7 @@ async function enriquecerConCrossref(
       signal,
       headers: {
         // Buena prÃ¡ctica: Crossref pide identificarse con un User-Agent descriptivo.
-        "User-Agent": "GIEU-Site/1.0 (https://grupoinformaticaeducativa.uninorte.edu.co; mailto:cvieira@uninorte.edu.co)",
+        "User-Agent": "GIEU-Site/1.0 (https://grupoinformaticaeducativa.uninorte.edu.co)",
       },
     });
 
@@ -485,8 +473,6 @@ function crearCatalogoVacio(): ScientiCatalogo {
   };
 }
 
-export async function obtenerSeccionesScienti(forzarRecarga = false): Promise<ScientiCatalogo> {
-  const ahora = Date.now();
 async function cargarSeccionesScienti(): Promise<ScientiCatalogo> {
   try {
     const signal = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
@@ -501,82 +487,30 @@ async function cargarSeccionesScienti(): Promise<ScientiCatalogo> {
 
     const catalogo: ScientiCatalogo = crearCatalogoVacio();
 
-  // 1. Si tenemos datos en caché válidos y no se fuerza recarga, responder en < 1ms
-  if (!forzarRecarga && catalogoCache && ahora - catalogoCache.timestamp < TTL_CATALOGO_MS) {
-    return catalogoCache.datos;
-  }
+    const headers = $("td.celdaEncabezado");
+    for (const header of headers.toArray()) {
+      const headerTd = $(header);
+      const encabezado = normalizarTextoSeccion(headerTd.text());
 
-  // 2. Si ya hay una petición en proceso, compartir la misma promesa (deduplicación)
-  if (promesaEnVuelo) {
-    return await promesaEnVuelo;
-  }
-      if (encabezado.includes("publicad") && !encabezado.includes("capitulo") && !encabezado.includes("libros de formacion") && !encabezado.includes("libros de divulgacion") && !encabezado.includes("libros publicados")) {
+      if (
+        encabezado.includes("publicad") &&
+        !encabezado.includes("capitulo") &&
+        !encabezado.includes("libros de formacion") &&
+        !encabezado.includes("libros de divulgacion") &&
+        !encabezado.includes("libros publicados")
+      ) {
         const publicacionesSeccion = await obtenerPublicacionesDeSeccion($, header, signal);
         catalogo.publicaciones.push(...publicacionesSeccion);
       }
 
-  // 3. Iniciar consulta a Scienti y Crossref
-  promesaEnVuelo = (async () => {
-    try {
-      const response = await fetch(SCIENTI_URL);
-      if (!response.ok) {
-        console.error(`No se pudo consultar Scienti: ${response.status}`);
-        if (catalogoCache) return catalogoCache.datos;
-        return crearCatalogoVacio();
+      if (encabezado.includes("softwar")) {
+        catalogo.software = extraerItemsSeccion($, header);
       }
 
-      const buffer = await response.arrayBuffer();
-      const html = new TextDecoder("iso-8859-1").decode(buffer);
-      const $ = cheerio.load(html);
-
-      const catalogo: ScientiCatalogo = crearCatalogoVacio();
-
-      const headers = $("td.celdaEncabezado");
-      for (const header of headers.toArray()) {
-        const headerTd = $(header);
-        const encabezado = normalizarTextoSeccion(headerTd.text());
-
-        if (
-          encabezado.includes("publicad") &&
-          !encabezado.includes("capitulo") &&
-          !encabezado.includes("libros de formacion") &&
-          !encabezado.includes("libros de divulgacion") &&
-          !encabezado.includes("libros publicados")
-        ) {
-          const publicacionesSeccion = await obtenerPublicacionesDeSeccion($, header);
-          catalogo.publicaciones.push(...publicacionesSeccion);
-        }
-
-        if (encabezado.includes("softwar")) {
-          catalogo.software = extraerItemsSeccion($, header);
-        }
-
-        if (encabezado.includes("capitulo") && encabezado.includes("libro")) {
-          catalogo.capitulosLibro = extraerItemsSeccion($, header);
-        }
-
-        if (encabezado.includes("libros de formacion") || encabezado.includes("libros de formación")) {
-          catalogo.librosFormacion = extraerItemsSeccion($, header);
-        }
-
-        if (encabezado.includes("libros de divulgacion") || encabezado.includes("libros de divulgación")) {
-          catalogo.librosDivulgacion = extraerItemsSeccion($, header);
-        }
+      if (encabezado.includes("capitulo") && encabezado.includes("libro")) {
+        catalogo.capitulosLibro = extraerItemsSeccion($, header);
       }
 
-      // Guardar en la caché global en memoria
-      catalogoCache = {
-        timestamp: Date.now(),
-        datos: catalogo,
-      };
-
-      return catalogo;
-    } catch (error) {
-      console.error("Error al consultar Scienti; se usará catálogo de respaldo.", error);
-      if (catalogoCache) return catalogoCache.datos;
-      return crearCatalogoVacio();
-    } finally {
-      promesaEnVuelo = null;
       if (encabezado === "libros publicados" || encabezado === "otros libros publicados") {
         catalogo.librosPublicados.push(...extraerItemsSeccion($, header));
       }
@@ -597,9 +531,6 @@ async function cargarSeccionesScienti(): Promise<ScientiCatalogo> {
     if (!catalogo.publicaciones.length && !catalogo.software.length && !catalogo.capitulosLibro.length && !catalogo.librosPublicados.length && !catalogo.librosFormacion.length && !catalogo.librosDivulgacion.length && !catalogo.otrosProductosTecnologicos.length) {
       throw new Error("Scienti no devolvió secciones reconocibles");
     }
-  })();
-
-  return await promesaEnVuelo;
     catalogoCache = catalogo;
     catalogoCacheTime = Date.now();
     siguienteIntento = 0;
@@ -611,12 +542,12 @@ async function cargarSeccionesScienti(): Promise<ScientiCatalogo> {
   }
 }
 
-export async function obtenerSeccionesScienti(): Promise<ScientiCatalogo> {
-  if (catalogoCache && Date.now() - catalogoCacheTime < CATALOG_TTL_MS) {
+export async function obtenerSeccionesScienti(forzarRecarga = false): Promise<ScientiCatalogo> {
+  if (!forzarRecarga && catalogoCache && Date.now() - catalogoCacheTime < CATALOG_TTL_MS) {
     return catalogoCache;
   }
 
-  if (Date.now() < siguienteIntento) {
+  if (!forzarRecarga && Date.now() < siguienteIntento) {
     return catalogoCache ?? crearCatalogoVacio();
   }
 
